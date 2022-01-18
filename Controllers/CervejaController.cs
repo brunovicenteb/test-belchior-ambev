@@ -29,7 +29,8 @@ namespace AmbevWeb.Controllers
                 var produto = await _context.Cervejas.FindAsync(id);
                 if (produto == null)
                 {
-                    return NotFound();
+                    TempData["mensagem"] = MensagemModel.Serializar("Produto não encontrado.", TipoMensagem.Erro);
+                    return RedirectToAction(nameof(Index));
                 }
                 return View(produto);
             }
