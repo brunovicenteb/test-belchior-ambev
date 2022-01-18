@@ -36,8 +36,7 @@
                     <td>@cliente.CPF</td>
                     <td>@cliente.Idade</td>
                     <td>
-                        <a asp-action="Index" asp-controller="Pedido" asp-route-cid="@cliente.IdUsuario" class="btn btn-sm btn-info"><i class="bi-cart" title="Pedidos"></i></a>
-                        <a asp-action="Index" asp-controller="Endereco" asp-route-cid="@cliente.IdUsuario" class="btn btn-sm btn-success"><i class="bi-mailbox" title="Endereços"></i></a>
+                        <a asp-action="Index" asp-controller="Venda" asp-route-cid="@cliente.IdUsuario" class="btn btn-sm btn-info"><i class="bi-cart" title="Vendas"></i></a>
                         <a asp-action="Cadastrar" asp-route-id="@cliente.IdUsuario" class="btn btn-sm btn-secondary"><i class="bi-pencil" title="Alterar cliente"></i></a>
                         <a asp-action="Excluir" asp-route-id="@cliente.IdUsuario" class="btn btn-sm btn-danger"><i class="bi-trash" title="Excluir cliente"></i></a>
                     </td>

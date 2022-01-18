@@ -25,6 +25,7 @@ nupkg/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+[M]igrations/
 x64/
 x86/
 build/

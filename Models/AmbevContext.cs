@@ -38,6 +38,7 @@ namespace AmbevWeb.Models
             DiaDaSemanaModel.Seed(pModelBuilder);
             CashBackModel.Seed(pModelBuilder);
             SituacaoCashBackModel.Seed(pModelBuilder);
+            ClienteModel.Seed(pModelBuilder);
         }
     }
 }
