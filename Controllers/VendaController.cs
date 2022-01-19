@@ -140,13 +140,13 @@ namespace AmbevWeb.Controllers
                 return RedirectToAction("Index", "Cliente");
             }
 
-            var pedido = await _context.Vendas
+            var venda = await _context.Vendas
                 .Include(p => p.Cliente)
                 .Include(p => p.ItensVenda)
                 .ThenInclude(i => i.Cerveja)
                 .FirstOrDefaultAsync(p => p.IdVenda == id);
 
-            return View(pedido);
+            return View(venda);
         }
 
         [HttpPost]
@@ -158,14 +158,14 @@ namespace AmbevWeb.Controllers
             {
                 _context.Vendas.Remove(venda);
                 if (await _context.SaveChangesAsync() > 0)
-                    TempData["mensagem"] = MensagemModel.Serializar("Venda excluído com sucesso.");
+                    TempData["mensagem"] = MensagemModel.Serializar("Venda excluída com sucesso.");
                 else
                     TempData["mensagem"] = MensagemModel.Serializar("Não foi possível excluir a venda.", TipoMensagem.Erro);
                 return RedirectToAction(nameof(Index), new { cid = venda.IdCliente });
             }
             else
             {
-                TempData["mensagem"] = MensagemModel.Serializar("Venda não encontrado.", TipoMensagem.Erro);
+                TempData["mensagem"] = MensagemModel.Serializar("Venda não encontrada.", TipoMensagem.Erro);
                 return RedirectToAction(nameof(Index), "Cliente");
             }
         }
@@ -185,13 +185,13 @@ namespace AmbevWeb.Controllers
                 return RedirectToAction("Index", "Cliente");
             }
 
-            var pedido = await _context.Vendas
+            var venda = await _context.Vendas
                 .Include(p => p.Cliente)
                 .Include(p => p.ItensVenda)
                 .ThenInclude(i => i.Cerveja)
                 .FirstOrDefaultAsync(p => p.IdVenda == id);
 
-            return View(pedido);
+            return View(venda);
         }
 
         [HttpPost]
@@ -199,27 +199,27 @@ namespace AmbevWeb.Controllers
         {
             if (VendaExiste(id))
             {
-                var pedido = await _context.Vendas
+                var venda = await _context.Vendas
                     .Include(p => p.Cliente)
                     .Include(p => p.ItensVenda)
                     .ThenInclude(i => i.Cerveja)
                     .FirstOrDefaultAsync(p => p.IdVenda == id);
 
-                if (pedido.ItensVenda.Count() > 0)
+                if (venda.ItensVenda.Count() > 0)
                 {
-                    pedido.DataVenda = DateTime.Now;
-                    foreach (var item in pedido.ItensVenda)
+                    venda.DataVenda = DateTime.Now;
+                    foreach (var item in venda.ItensVenda)
                         item.Cerveja.Estoque -= item.Quantidade;
                     if (await _context.SaveChangesAsync() > 0)
                         TempData["mensagem"] = MensagemModel.Serializar("Venda fechada com sucesso.");
                     else
                         TempData["mensagem"] = MensagemModel.Serializar("Não foi possível fechar a venda.", TipoMensagem.Erro);
-                    return RedirectToAction("Index", new { cid = pedido.IdCliente });
+                    return RedirectToAction("Index", new { cid = venda.IdCliente });
                 }
                 else
                 {
                     TempData["mensagem"] = MensagemModel.Serializar("Não é possível fechar uma venda sem cerveja.", TipoMensagem.Erro);
-                    return RedirectToAction("Index", new { cid = pedido.IdCliente });
+                    return RedirectToAction("Index", new { cid = venda.IdCliente });
                 }
             }
             else

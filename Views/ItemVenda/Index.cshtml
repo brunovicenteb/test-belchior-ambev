@@ -1,6 +1,6 @@
 @model IEnumerable<ItemVendaModel>
 @{
-    var venda = ViewBag.Pedido as VendaModel;
+    var venda = ViewBag.Venda as VendaModel;
     ViewBag.Subtitulo = $"Itens da Venda <b>{venda.IdVenda:D4}</b>";
 }
 
@@ -49,9 +49,9 @@
                     @if (!venda.DataVenda.HasValue)
                     {
                         <td>
-                            <a asp-action="Cadastrar" asp-route-vend="@itemVenda.IdVenda" asp-route-prod="@itemVenda.IdCerveja"
+                            <a asp-action="Cadastrar" asp-route-vend="@itemVenda.IdVenda" asp-route-cerv="@itemVenda.IdCerveja"
                     class="btn btn-sm btn-secondary"><i class="bi-pencil" title="Alterar"></i></a>
-                            <a asp-action="Excluir" asp-route-vend="@itemVenda.IdVenda" asp-route-prod="@itemVenda.IdCerveja"
+                            <a asp-action="Excluir" asp-route-vend="@itemVenda.IdVenda" asp-route-cerv="@itemVenda.IdCerveja"
                     class="btn btn-sm btn-danger"><i class="bi-trash" title="Excluir"></i></a>
                         </td>
                     }

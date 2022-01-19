@@ -9,18 +9,18 @@
 <hr>
 @if (Model.ItensVenda.Count > 0)
 {
-    <h6><b>Itens do pedido:</b></h6>
+    <h6><b>Itens da Venda:</b></h6>
     <hr>
     @foreach (var item in Model.ItensVenda)
     {   
         <h6>@item.Cerveja.Nome (@item.Quantidade x @item.ValorUnitario.ToString("C") = @item.ValorItem.ToString("C")</h6>
     }
     <hr>
-    <h6><b>Valor Total do Pedido: @Model.ValorTotal.Value.ToString("C")</b></h6>    
+    <h6><b>Valor Total da Venda: @Model.ValorTotal.Value.ToString("C")</b></h6>    
 }
 else
 {
-    <h6><b>Não há itens no pedido.</b></h6>
+    <h6><b>Não há itens nessa venda.</b></h6>
 }
 
 <h4>Deseja realmente excluir esse pedido?</h4>

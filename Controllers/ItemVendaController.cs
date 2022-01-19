@@ -28,7 +28,7 @@ namespace AmbevWeb.Controllers
                         .ThenInclude(i => i.Cerveja)
                         .FirstOrDefaultAsync(p => p.IdVenda == vend);
 
-                    ViewBag.Pedido = venda;
+                    ViewBag.Venda = venda;
                     return View(venda.ItensVenda);
                 }
                 TempData["mensagem"] = MensagemModel.Serializar("Venda não encontrada.", TipoMensagem.Erro);
@@ -39,24 +39,24 @@ namespace AmbevWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Cadastrar(int? vend, int? prod)
+        public async Task<IActionResult> Cadastrar(int? vend, int? cerv)
         {
             if (vend.HasValue)
             {
                 if (_Context.Vendas.Any(p => p.IdVenda == vend))
                 {
-                    var produtos = _Context.Cervejas
+                    var cervejas = _Context.Cervejas
                         .OrderBy(x => x.Nome)
                         .Select(p => new { p.IdCerveja, NomePreco = $"{p.Nome} ({p.Preco:C})" })
                         .AsNoTracking().ToList();
-                    var produtosSelectList = new SelectList(produtos, "IdCerveja", "NomePreco");
-                    ViewBag.Cervejas = produtosSelectList;
+                    var cervejasSelectList = new SelectList(cervejas, "IdCerveja", "NomePreco");
+                    ViewBag.Cervejas = cervejasSelectList;
 
-                    if (prod.HasValue && ItemVendaExiste(vend.Value, prod.Value))
+                    if (cerv.HasValue && ItemVendaExiste(vend.Value, cerv.Value))
                     {
                         var itemVenda = await _Context.ItensVendas
                             .Include(i => i.Cerveja)
-                            .FirstOrDefaultAsync(i => i.IdVenda == vend && i.IdCerveja == prod);
+                            .FirstOrDefaultAsync(i => i.IdVenda == vend && i.IdCerveja == cerv);
                         return View(itemVenda);
                     }
                     else
@@ -83,9 +83,11 @@ namespace AmbevWeb.Controllers
             {
                 if (itemVenda.IdVenda > 0)
                 {
-                    var produto = await _Context.Cervejas.FindAsync(itemVenda.IdVenda);
-                    itemVenda.ValorUnitario = produto.Preco;
-                    if (ItemVendaExiste(itemVenda.IdVenda, itemVenda.IdVenda))
+                    var cerveja = await _Context.Cervejas.FindAsync(itemVenda.IdCerveja);
+                    itemVenda.ValorUnitario = cerveja.Preco;
+                    itemVenda.IdCashBack = 1;
+                    itemVenda.IdSituacaoCashBack = 1;
+                    if (ItemVendaExiste(itemVenda.IdVenda, itemVenda.IdCerveja))
                     {
                         _Context.ItensVendas.Update(itemVenda);
                         if (await _Context.SaveChangesAsync() > 0)
@@ -101,12 +103,12 @@ namespace AmbevWeb.Controllers
                         else
                             TempData["mensagem"] = MensagemModel.Serializar("Erro ao cadastrar item de venda.", TipoMensagem.Erro);
                     }
-                    var pedido = await _Context.Vendas.FindAsync(itemVenda.IdVenda);
-                    pedido.ValorTotal = _Context.ItensVendas
+                    var venda = await _Context.Vendas.FindAsync(itemVenda.IdVenda);
+                    venda.ValorTotal = _Context.ItensVendas
                         .Where(i => i.IdVenda == itemVenda.IdVenda)
                         .Sum(i => i.ValorUnitario * i.Quantidade);
                     await _Context.SaveChangesAsync();
-                    return RedirectToAction("Index", new { ped = itemVenda.IdVenda });
+                    return RedirectToAction("Index", new { vend = itemVenda.IdVenda });
                 }
                 else
                 {
@@ -150,16 +152,16 @@ namespace AmbevWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Excluir(int idVenda, int idProduto)
         {
-            var itemPedido = await _Context.ItensVendas.FindAsync(idVenda, idProduto);
-            if (itemPedido != null)
+            var itemvendido = await _Context.ItensVendas.FindAsync(idVenda, idProduto);
+            if (itemvendido != null)
             {
-                _Context.ItensVendas.Remove(itemPedido);
+                _Context.ItensVendas.Remove(itemvendido);
                 if (await _Context.SaveChangesAsync() > 0)
                 {
                     TempData["mensagem"] = MensagemModel.Serializar("Item de venda excluído com sucesso.");
-                    var pedido = await _Context.Vendas.FindAsync(itemPedido.IdVenda);
-                    pedido.ValorTotal = _Context.ItensVendas
-                        .Where(i => i.IdVenda == itemPedido.IdVenda)
+                    var vendido = await _Context.Vendas.FindAsync(itemvendido.IdVenda);
+                    vendido.ValorTotal = _Context.ItensVendas
+                        .Where(i => i.IdVenda == itemvendido.IdVenda)
                         .Sum(i => i.ValorUnitario * i.Quantidade);
                     await _Context.SaveChangesAsync();
                 }

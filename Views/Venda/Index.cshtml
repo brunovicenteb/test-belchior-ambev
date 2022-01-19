@@ -54,7 +54,7 @@
                             <a asp-action="Fechar" asp-route-id="@venda.IdVenda" class="btn btn-sm btn-success"><i class="bi-check-lg" title="Fechar venda"></i></a>
                             <span class="btn btn-sm btn-light"><i class="bi-truck text-gray" title="Feche a venda antes de registrar a entrega"></i></span>
                         }
-                        <a asp-action="Index" asp-controller="ItemPedido" asp-route-ped="@venda.IdVenda" class="btn btn-sm btn-info"><i class="bi-list-check" title="Itens da venda"></i></a>                        
+                        <a asp-action="Index" asp-controller="ItemVenda" asp-route-vend="@venda.IdVenda" class="btn btn-sm btn-info"><i class="bi-list-check" title="Itens da venda"></i></a>
                         <a asp-action="Excluir" asp-route-id="@venda.IdVenda" class="btn btn-sm btn-danger"><i class="bi-trash" title="Excluir venda"></i></a>
                     </td>
                 </tr>
