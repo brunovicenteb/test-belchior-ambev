@@ -84,6 +84,6 @@ else
     @if (!venda.DataVenda.HasValue && venda.ItensVenda.Count() > 0)
     {
         <a asp-action="Fechar" asp-controller="Venda" asp-route-id="@venda.IdVenda" class="btn btn-success">Fechar
-            Pedido</a>
+            Venda</a>
     }
 </div>

@@ -17,6 +17,8 @@ namespace AmbevWeb.Models
 
         public double? ValorTotal { get; set; }
 
+        public double? CashBack { get; set; }
+
         public int IdCliente { get; set; }
 
         [ForeignKey("IdCliente")]

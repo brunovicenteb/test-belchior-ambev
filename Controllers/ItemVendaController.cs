@@ -25,8 +25,8 @@ namespace AmbevWeb.Controllers
                 {
                     var venda = await _Context.Vendas
                         .Include(p => p.Cliente)
-                        .Include(p => p.ItensVenda.OrderBy(i => i.Cerveja.Nome)).ThenInclude(i => i.Cerveja)
-                        .Include(p => p.ItensVenda.OrderBy(i => i.Cerveja.Nome)).ThenInclude(i => i.CashBack)
+                        .Include(p => p.ItensVenda.OrderBy(i => i.Cerveja.Nome))
+                        .ThenInclude(i => i.Cerveja)
                         .FirstOrDefaultAsync(p => p.IdVenda == vend);
 
                     ViewBag.Venda = venda;
@@ -57,13 +57,12 @@ namespace AmbevWeb.Controllers
                     {
                         var itemVenda = await _Context.ItensVendas
                             .Include(i => i.Cerveja)
-                            .Include(i => i.CashBack)
                             .FirstOrDefaultAsync(i => i.IdVenda == vend && i.IdCerveja == cerv);
                         return View(itemVenda);
                     }
                     else
                     {
-                        return View(new ItemVendaModel() { IdVenda = vend.Value, ValorUnitario = 0, Quantidade = 1 });
+                        return View(new ItemVendaModel() { IdVenda = vend.Value, ValorUnitario = 0, FracaoCachBack = 0, Quantidade = 1 });
                     }
                 }
                 TempData["mensagem"] = MensagemModel.Serializar("Venda não encontrada.", TipoMensagem.Erro);
@@ -102,8 +101,9 @@ namespace AmbevWeb.Controllers
                     {
                         TempData["mensagem"] = MensagemModel.Serializar("Não foi possível obter o CashBack configurado para o produto.");
                         return RedirectToAction("Index", new { vend = itemVenda.IdVenda });
-                    }                        
+                    }
                     itemVenda.IdCashBack = cashBack.IdCachBack;
+                    itemVenda.FracaoCachBack = cashBack.Porcentagem / 100;
                     if (ItemVendaExiste(itemVenda.IdVenda, itemVenda.IdCerveja))
                     {
                         _Context.ItensVendas.Update(itemVenda);
@@ -121,9 +121,10 @@ namespace AmbevWeb.Controllers
                             TempData["mensagem"] = MensagemModel.Serializar("Erro ao cadastrar item de venda.", TipoMensagem.Erro);
                     }
                     var venda = await _Context.Vendas.FindAsync(itemVenda.IdVenda);
-                    venda.ValorTotal = _Context.ItensVendas
-                        .Where(i => i.IdVenda == itemVenda.IdVenda)
+                    venda.ValorTotal = _Context.ItensVendas.Where(i => i.IdVenda == itemVenda.IdVenda)
                         .Sum(i => i.ValorUnitario * i.Quantidade);
+                    venda.CashBack = _Context.ItensVendas.Where(i => i.IdVenda == itemVenda.IdVenda)
+                        .Sum(i => i.ValorUnitario * i.Quantidade * i.FracaoCachBack);
                     await _Context.SaveChangesAsync();
                     return RedirectToAction("Index", new { vend = itemVenda.IdVenda });
                 }

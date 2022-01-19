@@ -24,6 +24,7 @@
                 <th>Número</th>
                 <th>Data/Hora Venda</th>
                 <th>Valor Total</th>
+                <th>CashBack</th>
                 <th>Data/Hora Entrega</th>
                 <th>Ações</th>
             </tr>
@@ -35,6 +36,7 @@
                     <td>@venda.IdVenda.ToString("D4")</td>
                     <td>@(venda.DataVenda.HasValue ? venda.DataVenda : "Em Aberto")</td>
                     <td>@venda.ValorTotal.Value.ToString("C")</td>
+                    <td>@venda.CashBack.Value.ToString("C")</td>
                     <td>@(venda.DataEntrega.HasValue ? venda.DataEntrega : "Não Entregue")</td>
                     <td>
                         @if (venda.DataVenda.HasValue)

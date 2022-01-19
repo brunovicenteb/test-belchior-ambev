@@ -71,7 +71,7 @@ namespace AmbevWeb.Migrations
                     IdCachBack = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     IdCerveja = table.Column<int>(type: "INTEGER", nullable: false),
-                    Porcentagem = table.Column<double>(type: "REAL", nullable: true),
+                    Porcentagem = table.Column<double>(type: "REAL", nullable: false),
                     IdDiaDaSemana = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -120,6 +120,7 @@ namespace AmbevWeb.Migrations
                     DataVenda = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DataEntrega = table.Column<DateTime>(type: "TEXT", nullable: true),
                     ValorTotal = table.Column<double>(type: "REAL", nullable: true),
+                    CashBack = table.Column<double>(type: "REAL", nullable: true),
                     IdCliente = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -143,28 +144,16 @@ namespace AmbevWeb.Migrations
                     IdSituacaoCashBack = table.Column<int>(type: "INTEGER", nullable: false),
                     Quantidade = table.Column<int>(type: "INTEGER", nullable: false),
                     ValorUnitario = table.Column<double>(type: "REAL", nullable: false),
-                    ValorUnitarioCashBack = table.Column<double>(type: "REAL", nullable: false)
+                    FracaoCachBack = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ItemVenda", x => new { x.IdVenda, x.IdCerveja });
                     table.ForeignKey(
-                        name: "FK_ItemVenda_CashBack_IdCashBack",
-                        column: x => x.IdCashBack,
-                        principalTable: "CashBack",
-                        principalColumn: "IdCachBack",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_ItemVenda_Cerveja_IdCerveja",
                         column: x => x.IdCerveja,
                         principalTable: "Cerveja",
                         principalColumn: "IdCerveja",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ItemVenda_SituacaoCashBack_IdSituacaoCashBack",
-                        column: x => x.IdSituacaoCashBack,
-                        principalTable: "SituacaoCashBack",
-                        principalColumn: "IdSituacaoCashBack",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ItemVenda_Venda_IdVenda",
@@ -490,19 +479,9 @@ namespace AmbevWeb.Migrations
                 column: "IdDiaDaSemana");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemVenda_IdCashBack",
-                table: "ItemVenda",
-                column: "IdCashBack");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ItemVenda_IdCerveja",
                 table: "ItemVenda",
                 column: "IdCerveja");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ItemVenda_IdSituacaoCashBack",
-                table: "ItemVenda",
-                column: "IdSituacaoCashBack");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Venda_IdCliente",
@@ -513,22 +492,22 @@ namespace AmbevWeb.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ItemVenda");
+                name: "CashBack");
 
             migrationBuilder.DropTable(
-                name: "CashBack");
+                name: "ItemVenda");
 
             migrationBuilder.DropTable(
                 name: "SituacaoCashBack");
 
             migrationBuilder.DropTable(
-                name: "Venda");
+                name: "DiaDaSemana");
 
             migrationBuilder.DropTable(
                 name: "Cerveja");
 
             migrationBuilder.DropTable(
-                name: "DiaDaSemana");
+                name: "Venda");
 
             migrationBuilder.DropTable(
                 name: "Cliente");

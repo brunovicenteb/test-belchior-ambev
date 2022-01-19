@@ -63,7 +63,7 @@ namespace AmbevWeb.Controllers
                     }
                     else
                     {
-                        pedido = new VendaModel { IdCliente = cid.Value, ValorTotal = 0 };
+                        pedido = new VendaModel { IdCliente = cid.Value, ValorTotal = 0, CashBack = 0 };
                         cliente.Vendas.Add(pedido);
                         await _context.SaveChangesAsync();
                     }
@@ -251,6 +251,23 @@ namespace AmbevWeb.Controllers
                 .FirstOrDefaultAsync(p => p.IdVenda == id);
 
             return View(pedido);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Entregar(int idVenda)
+        {
+            if (!VendaExiste(idVenda))
+            {
+                TempData["mensagem"] = MensagemModel.Serializar("Venda não encontrado.", TipoMensagem.Erro);
+                return RedirectToAction("Index", "Cliente");
+            }
+            var venda = await _context.Vendas.FindAsync(idVenda);
+            venda.DataEntrega = DateTime.Now;
+            if (await _context.SaveChangesAsync() > 0)
+                TempData["mensagem"] = MensagemModel.Serializar("Entrega de venda registrada com sucesso.");
+            else
+                TempData["mensagem"] = MensagemModel.Serializar("Não foi possível registrar a entrega da venda.", TipoMensagem.Erro);
+            return RedirectToAction("Index", new { cid = venda.IdCliente });
         }
     }
 }

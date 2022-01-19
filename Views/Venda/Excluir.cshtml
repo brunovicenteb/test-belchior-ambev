@@ -13,7 +13,7 @@
     <hr>
     @foreach (var item in Model.ItensVenda)
     {   
-        <h6>@item.Cerveja.Nome (@item.Quantidade x @item.ValorUnitario.ToString("C") = @item.ValorItem.ToString("C")</h6>
+        <h6>@item.Cerveja.Nome (@item.Quantidade x @item.ValorUnitario.ToString("C") = @item.ValorItem.ToString("C"))</h6>
     }
     <hr>
     <h6><b>Valor Total da Venda: @Model.ValorTotal.Value.ToString("C")</b></h6>    

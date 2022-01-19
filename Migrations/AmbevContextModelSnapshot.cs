@@ -28,7 +28,7 @@ namespace AmbevWeb.Migrations
                     b.Property<int>("IdDiaDaSemana")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("Porcentagem")
+                    b.Property<double>("Porcentagem")
                         .HasColumnType("REAL");
 
                     b.HasKey("IdCachBack");
@@ -353,6 +353,9 @@ namespace AmbevWeb.Migrations
                     b.Property<int>("IdCerveja")
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("FracaoCachBack")
+                        .HasColumnType("REAL");
+
                     b.Property<int>("IdCashBack")
                         .HasColumnType("INTEGER");
 
@@ -365,16 +368,9 @@ namespace AmbevWeb.Migrations
                     b.Property<double>("ValorUnitario")
                         .HasColumnType("REAL");
 
-                    b.Property<double>("ValorUnitarioCashBack")
-                        .HasColumnType("REAL");
-
                     b.HasKey("IdVenda", "IdCerveja");
 
-                    b.HasIndex("IdCashBack");
-
                     b.HasIndex("IdCerveja");
-
-                    b.HasIndex("IdSituacaoCashBack");
 
                     b.ToTable("ItemVenda");
                 });
@@ -442,6 +438,9 @@ namespace AmbevWeb.Migrations
                     b.Property<int>("IdVenda")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<double?>("CashBack")
+                        .HasColumnType("REAL");
 
                     b.Property<DateTime?>("DataEntrega")
                         .HasColumnType("TEXT");
@@ -589,21 +588,9 @@ namespace AmbevWeb.Migrations
 
             modelBuilder.Entity("AmbevWeb.Models.ItemVendaModel", b =>
                 {
-                    b.HasOne("AmbevWeb.Models.CashBackModel", "CashBack")
-                        .WithMany()
-                        .HasForeignKey("IdCashBack")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AmbevWeb.Models.CervejaModel", "Cerveja")
                         .WithMany()
                         .HasForeignKey("IdCerveja")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AmbevWeb.Models.SituacaoCashBackModel", "SituacaoCashBack")
-                        .WithMany()
-                        .HasForeignKey("IdSituacaoCashBack")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -613,11 +600,7 @@ namespace AmbevWeb.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CashBack");
-
                     b.Navigation("Cerveja");
-
-                    b.Navigation("SituacaoCashBack");
 
                     b.Navigation("Venda");
                 });
@@ -625,7 +608,7 @@ namespace AmbevWeb.Migrations
             modelBuilder.Entity("AmbevWeb.Models.VendaModel", b =>
                 {
                     b.HasOne("AmbevWeb.Models.ClienteModel", "Cliente")
-                        .WithMany("Pedidos")
+                        .WithMany("Vendas")
                         .HasForeignKey("IdCliente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -649,7 +632,7 @@ namespace AmbevWeb.Migrations
 
             modelBuilder.Entity("AmbevWeb.Models.ClienteModel", b =>
                 {
-                    b.Navigation("Pedidos");
+                    b.Navigation("Vendas");
                 });
 #pragma warning restore 612, 618
         }

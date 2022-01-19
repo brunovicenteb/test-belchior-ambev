@@ -14,7 +14,7 @@ namespace AmbevWeb.Models
 
         public int IdCerveja { get; set; }
 
-        public double? Porcentagem { get; set; }
+        public double Porcentagem { get; set; }
 
         public int IdDiaDaSemana { get; set; }
 
