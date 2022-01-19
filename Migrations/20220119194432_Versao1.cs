@@ -57,7 +57,7 @@ namespace AmbevWeb.Migrations
                     Nome = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     Email = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
                     Senha = table.Column<string>(type: "TEXT", maxLength: 128, nullable: true),
-                    DataCadastro = table.Column<DateTime>(type: "TEXT", nullable: true, defaultValueSql: "datetime('now', 'localtime', 'start of day')")
+                    DataCadastro = table.Column<DateTime>(type: "TEXT", nullable: true, defaultValueSql: "datetime('now', 'localtime')")
                 },
                 constraints: table =>
                 {
@@ -117,6 +117,7 @@ namespace AmbevWeb.Migrations
                 {
                     IdVenda = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    InicioVenda = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "datetime('now', 'localtime')"),
                     DataVenda = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DataEntrega = table.Column<DateTime>(type: "TEXT", nullable: true),
                     ValorTotal = table.Column<double>(type: "REAL", nullable: true),

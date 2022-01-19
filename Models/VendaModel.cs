@@ -10,15 +10,11 @@ namespace AmbevWeb.Models
     {
         [Key]
         public int IdVenda { get; set; }
-
+        public DateTime InicioVenda { get; set; }
         public DateTime? DataVenda { get; set; }
-
         public DateTime? DataEntrega { get; set; }
-
         public double? ValorTotal { get; set; }
-
         public double? CashBack { get; set; }
-
         public int IdCliente { get; set; }
 
         [ForeignKey("IdCliente")]

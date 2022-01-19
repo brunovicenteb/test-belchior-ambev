@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmbevWeb.Migrations
 {
     [DbContext(typeof(AmbevContext))]
-    [Migration("20220119180714_Versao1")]
+    [Migration("20220119194432_Versao1")]
     partial class Versao1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -414,7 +414,7 @@ namespace AmbevWeb.Migrations
                     b.Property<DateTime?>("DataCadastro")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
-                        .HasDefaultValueSql("datetime('now', 'localtime', 'start of day')");
+                        .HasDefaultValueSql("datetime('now', 'localtime')");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -452,6 +452,11 @@ namespace AmbevWeb.Migrations
 
                     b.Property<int>("IdCliente")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("InicioVenda")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("datetime('now', 'localtime')");
 
                     b.Property<double?>("ValorTotal")
                         .HasColumnType("REAL");

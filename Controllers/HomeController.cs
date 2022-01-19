@@ -8,22 +8,16 @@ namespace AmbevWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AmbevContext _context;
+        private readonly AmbevContext _Context;
 
-        public HomeController(AmbevContext context)
+        public HomeController(AmbevContext pContext)
         {
-            this._context = context;
+            this._Context = pContext;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var pedidos = await _context.Vendas
-                .Where(p => !p.DataVenda.HasValue)
-                .Include(p => p.Cliente)
-                .OrderByDescending(p => p.IdVenda)
-                .AsNoTracking().ToListAsync();
-
-            return View(pedidos);
+            return View();
         }
     }
 }

@@ -21,7 +21,6 @@ namespace AmbevWeb
         {
             Configuration = configuration;
         }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews()

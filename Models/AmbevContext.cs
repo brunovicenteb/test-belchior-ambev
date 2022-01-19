@@ -24,10 +24,14 @@ namespace AmbevWeb.Models
             pModelBuilder.Entity<DiaDaSemanaModel>().ToTable("DiaDaSemana");
             pModelBuilder.Entity<CashBackModel>().ToTable("CashBack");
             pModelBuilder.Entity<ClienteModel>().ToTable("Cliente");
+            pModelBuilder.Entity<VendaModel>().ToTable("Venda");
             pModelBuilder.Entity<SituacaoCashBackModel>().ToTable("SituacaoCashBack");
 
+            pModelBuilder.Entity<VendaModel>().Property(u => u.InicioVenda)
+                .HasDefaultValueSql("datetime('now', 'localtime')")
+                .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             pModelBuilder.Entity<UsuarioModel>().Property(u => u.DataCadastro)
-                .HasDefaultValueSql("datetime('now', 'localtime', 'start of day')")
+                .HasDefaultValueSql("datetime('now', 'localtime')")
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             pModelBuilder.Entity<CervejaModel>().Property(p => p.Estoque)
                 .HasDefaultValue(0);

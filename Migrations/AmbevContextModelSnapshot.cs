@@ -412,7 +412,7 @@ namespace AmbevWeb.Migrations
                     b.Property<DateTime?>("DataCadastro")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
-                        .HasDefaultValueSql("datetime('now', 'localtime', 'start of day')");
+                        .HasDefaultValueSql("datetime('now', 'localtime')");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -450,6 +450,11 @@ namespace AmbevWeb.Migrations
 
                     b.Property<int>("IdCliente")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("InicioVenda")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("datetime('now', 'localtime')");
 
                     b.Property<double?>("ValorTotal")
                         .HasColumnType("REAL");

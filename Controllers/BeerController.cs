@@ -66,6 +66,31 @@ namespace AmbevWeb.Controllers
             return Ok(venda);
         }
 
+        //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarVendas/id
+        [HttpGet("ConsultarVendas/{page?}")]
+        public async Task<IActionResult> ConsultarVendas(int? page = 0)
+        {
+            int jump = (page ?? 0) * _PageSize;
+            var vendas = await _Context.Vendas
+                .OrderByDescending(o => o.InicioVenda)
+                .Skip(jump)
+                .Take(_PageSize)
+                .Include(o=>o.Cliente)
+                .Include(o=>o.ItensVenda)
+                .AsNoTracking().ToListAsync();
+            return Ok(vendas);
+        }
+
+        // Páginada OK
+        // Ordenando de forma decrescente pela data da venda OK        
+        // Range not yet
+
+
+        /*         Consultar todas as vendas efetuadas de forma paginada, filtrando pelo range
+        de datas (inicial e final) da venda e ordenando de forma decrescente pela data
+        da venda;  */
+
+
         // //Mapeia as requisições POST para http://localhost:{porta}/api/person/
         // //O [FromBody] consome o Objeto JSON enviado no corpo da requisição
         // [HttpPost]
