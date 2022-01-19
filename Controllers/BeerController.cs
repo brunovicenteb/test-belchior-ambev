@@ -24,12 +24,15 @@ namespace AmbevWeb.Controllers
             return Ok();
         }
 
-        //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarCervejas/id
-        [HttpGet("ConsultarCervejas/{page}")]
-        public async Task<IActionResult> ConsultarCervejas(int page)
+        //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarCervejas/id?=x&name=y
+        [HttpGet("ConsultarCervejas/{page?}/{name?}")]
+        public async Task<IActionResult> ConsultarCervejas(int? page = 0, string name = null)
         {
-            int jump = page * _PageSize;
+            bool noFilter = string.IsNullOrEmpty(name);
+            name = noFilter ? name : name.ToLower();
+            int jump = (page ?? 0) * _PageSize;
             var beer = await _Context.Cervejas
+                .Where(o => noFilter || o.Nome.ToLower().Contains(name))
                 .OrderBy(o => o.Nome)
                 .Skip(jump)
                 .Take(_PageSize)
@@ -38,9 +41,11 @@ namespace AmbevWeb.Controllers
         }
 
         //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarCervejaPeloIdentificador/id
-        [HttpGet("ConsultarCervejaPeloIdentificador/{id}")]
-        public async Task<IActionResult> ConsultarCervejaPeloIdentificador(int id)
+        [HttpGet("ConsultarCervejaPeloIdentificador/{id?}")]
+        public async Task<IActionResult> ConsultarCervejaPeloIdentificador(int? id = null)
         {
+            if (!id.HasValue)
+                return NotFound("Nenhum identificador de cerveja foi informado.");
             var beer = await _Context.Cervejas.FindAsync(id);
             if (beer == null)
                 return NotFound("Nenhuma cerveja foi encontrada pelo identificador " + id + ".");

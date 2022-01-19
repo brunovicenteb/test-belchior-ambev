@@ -34,7 +34,7 @@
                     <td>@cerveja.Nome</td>
                     <td>@cerveja.Estoque.ToString("D4")</td>
                     <td>@cerveja.Preco.ToString("C")</td>
-                    <td>@cerveja.TotalEstoque.ToString("C")</td>
+                    <td>@((cerveja.Preco * cerveja.Estoque).ToString("C"))</td>
                     <td>
                         <a asp-action="Cadastrar" asp-route-id="@cerveja.IdCerveja" class="btn btn-sm btn-secondary"><i class="bi-pencil" title="Alterar"></i></a>
                         <a asp-action="Excluir" asp-route-id="@cerveja.IdCerveja" class="btn btn-sm btn-danger"><i class="bi-trash" title="Excluir"></i></a>

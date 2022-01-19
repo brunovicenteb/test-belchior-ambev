@@ -17,13 +17,7 @@ namespace AmbevWeb.Models
         public int Estoque { get; set; }
 
         public double Preco { get; set; }
-
-        [NotMapped]
-        public double TotalEstoque
-        {
-            get => Preco * Estoque;
-        }
-
+        
         public static void Seed(ModelBuilder pModelBuilder)
         {
             pModelBuilder.Entity<CervejaModel>().HasData(

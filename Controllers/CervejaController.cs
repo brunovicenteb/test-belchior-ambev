@@ -29,7 +29,7 @@ namespace AmbevWeb.Controllers
                 var produto = await _context.Cervejas.FindAsync(id);
                 if (produto == null)
                 {
-                    TempData["mensagem"] = MensagemModel.Serializar("Produto não encontrado.", TipoMensagem.Erro);
+                    TempData["mensagem"] = MensagemModel.Serializar("Cerveja não encontrada.", TipoMensagem.Erro);
                     return RedirectToAction(nameof(Index));
                 }
                 return View(produto);
@@ -54,16 +54,16 @@ namespace AmbevWeb.Controllers
                         _context.Cervejas.Update(cerveja);
                         if (await _context.SaveChangesAsync() > 0)
                         {
-                            TempData["mensagem"] = MensagemModel.Serializar("Produto alterado com sucesso.");
+                            TempData["mensagem"] = MensagemModel.Serializar("Cerveja alterada com sucesso.");
                         }
                         else
                         {
-                            TempData["mensagem"] = MensagemModel.Serializar("Erro ao alterar produto.", TipoMensagem.Erro);
+                            TempData["mensagem"] = MensagemModel.Serializar("Erro ao alterar cerveja.", TipoMensagem.Erro);
                         }
                     }
                     else
                     {
-                        TempData["mensagem"] = MensagemModel.Serializar("Produto não encontrado.", TipoMensagem.Erro);
+                        TempData["mensagem"] = MensagemModel.Serializar("Cerveja não encontrada.", TipoMensagem.Erro);
                     }
                 }
                 else
@@ -71,11 +71,11 @@ namespace AmbevWeb.Controllers
                     _context.Cervejas.Add(cerveja);
                     if (await _context.SaveChangesAsync() > 0)
                     {
-                        TempData["mensagem"] = MensagemModel.Serializar("Produto cadastrado com sucesso.");
+                        TempData["mensagem"] = MensagemModel.Serializar("Cerveja cadastrada com sucesso.");
                     }
                     else
                     {
-                        TempData["mensagem"] = MensagemModel.Serializar("Erro ao cadastrar produto.", TipoMensagem.Erro);
+                        TempData["mensagem"] = MensagemModel.Serializar("Erro ao cadastrar cerveja.", TipoMensagem.Erro);
                     }
                 }
                 return RedirectToAction(nameof(Index));
