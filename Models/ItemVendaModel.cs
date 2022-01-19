@@ -10,11 +10,10 @@ namespace AmbevWeb.Models
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdCerveja { get; set; }
-        public int IdCashBack { get; set; }        
+        public int IdCashBack { get; set; }
         public int IdSituacaoCashBack { get; set; }
         public int Quantidade { get; set; }
         public double ValorUnitario { get; set; }
-        public double ValorUnitarioCashBack { get; set; }
 
         [ForeignKey("IdVenda")]
         public VendaModel Venda { get; set; }
@@ -25,13 +24,13 @@ namespace AmbevWeb.Models
         [ForeignKey("IdCashBack")]
         public CashBackModel CashBack { get; set; }
 
-        [ForeignKey("IdSituacaoCashBack")]
-        public SituacaoCashBackModel SituacaoCashBack { get; set; }
-
         [NotMapped]
         public double ValorItem { get => this.Quantidade * this.ValorUnitario; }
 
         [NotMapped]
-        public double ValorTotalCachBack { get => this.Quantidade * this.ValorUnitarioCashBack; }
+        public double ValorUnitarioCashBack { get => CashBack == null ? 0 : this.ValorUnitario * (CashBack.Porcentagem.Value / 100); }
+
+        [NotMapped]
+        public double ValorTotalCachBack { get => this.Quantidade * ValorUnitarioCashBack; }
     }
 }

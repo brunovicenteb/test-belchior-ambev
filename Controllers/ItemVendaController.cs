@@ -25,8 +25,8 @@ namespace AmbevWeb.Controllers
                 {
                     var venda = await _Context.Vendas
                         .Include(p => p.Cliente)
-                        .Include(p => p.ItensVenda.OrderBy(i => i.Cerveja.Nome))
-                        .ThenInclude(i => i.Cerveja)
+                        .Include(p => p.ItensVenda.OrderBy(i => i.Cerveja.Nome)).ThenInclude(i => i.Cerveja)
+                        .Include(p => p.ItensVenda.OrderBy(i => i.Cerveja.Nome)).ThenInclude(i => i.CashBack)
                         .FirstOrDefaultAsync(p => p.IdVenda == vend);
 
                     ViewBag.Venda = venda;
@@ -57,6 +57,7 @@ namespace AmbevWeb.Controllers
                     {
                         var itemVenda = await _Context.ItensVendas
                             .Include(i => i.Cerveja)
+                            .Include(i => i.CashBack)
                             .FirstOrDefaultAsync(i => i.IdVenda == vend && i.IdCerveja == cerv);
                         return View(itemVenda);
                     }
@@ -146,29 +147,29 @@ namespace AmbevWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Excluir(int? vend, int? prod)
+        public async Task<IActionResult> Excluir(int? vend, int? cerv)
         {
-            if (!vend.HasValue || !prod.HasValue)
+            if (!vend.HasValue || !cerv.HasValue)
             {
                 TempData["mensagem"] = MensagemModel.Serializar("Item de venda não informado.", TipoMensagem.Erro);
                 return RedirectToAction("Index", "Cliente");
             }
 
-            if (!ItemVendaExiste(vend.Value, prod.Value))
+            if (!ItemVendaExiste(vend.Value, cerv.Value))
             {
                 TempData["mensagem"] = MensagemModel.Serializar("Item de venda não encontrado.", TipoMensagem.Erro);
                 return RedirectToAction("Index", "Cliente");
             }
 
-            var itemVenda = await _Context.ItensVendas.FindAsync(vend, prod);
+            var itemVenda = await _Context.ItensVendas.FindAsync(vend, cerv);
             _Context.Entry(itemVenda).Reference(i => i.Cerveja).Load();
             return View(itemVenda);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Excluir(int idVenda, int idProduto)
+        public async Task<IActionResult> Excluir(int idVenda, int IdCerveja)
         {
-            var itemvendido = await _Context.ItensVendas.FindAsync(idVenda, idProduto);
+            var itemvendido = await _Context.ItensVendas.FindAsync(idVenda, IdCerveja);
             if (itemvendido != null)
             {
                 _Context.ItensVendas.Remove(itemvendido);

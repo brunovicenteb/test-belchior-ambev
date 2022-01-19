@@ -31,7 +31,8 @@
                 <th>Produto</th>
                 <th>Valor Unit.</th>
                 <th>Qtde</th>
-                <th>Valor Item</th>
+                <th>CashBack</th>
+                <th>Total</th>
                 @if (!venda.DataVenda.HasValue)
                 {
                     <th>Ações</th>
@@ -45,6 +46,7 @@
                     <td>@itemVenda.Cerveja.Nome</td>
                     <td>@itemVenda.ValorUnitario.ToString("C")</td>
                     <td>@itemVenda.Quantidade</td>
+                    <td>@itemVenda.ValorTotalCachBack.ToString("C")</td>
                     <td>@itemVenda.ValorItem.ToString("C")</td>
                     @if (!venda.DataVenda.HasValue)
                     {
