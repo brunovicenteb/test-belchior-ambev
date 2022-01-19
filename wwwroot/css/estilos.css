@@ -10,16 +10,17 @@
 
 .tabela-clientes tr > th:last-child,
 .tabela-clientes tr > td:last-child,
+.tabela-clientes tr > th:nth-child(2),
+.tabela-clientes tr > td:nth-child(2),
 .tabela-clientes tr > th:nth-child(3),
 .tabela-clientes tr > td:nth-child(3),
 .tabela-clientes tr > th:nth-child(4),
 .tabela-clientes tr > td:nth-child(4),
+.tabela-clientes tr > th:nth-child(5),
+.tabela-clientes tr > td:nth-child(5),
 
-.tabela-enderecos tr > th:last-child,
-.tabela-enderecos tr > td:last-child,
-
-.tabela-pedidos tr > th:last-child,
-.tabela-pedidos tr > td:last-child,
+.tabela-vendas tr > th:last-child,
+.tabela-vendas tr > td:last-child,
 
 .tabela-itens tr > th:last-child,
 .tabela-itens tr > td:last-child,

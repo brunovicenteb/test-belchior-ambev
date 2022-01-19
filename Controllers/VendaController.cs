@@ -54,7 +54,7 @@ namespace AmbevWeb.Controllers
                 var cliente = await _context.Clientes.FindAsync(cid);
                 if (cliente != null)
                 {
-                    _context.Entry(cliente).Collection(c => c.Pedidos).Load();
+                    _context.Entry(cliente).Collection(c => c.Vendas).Load();
                     VendaModel pedido = null;
                     if (_context.Vendas.Any(p => p.IdCliente == cid && !p.DataVenda.HasValue))
                     {
@@ -64,7 +64,7 @@ namespace AmbevWeb.Controllers
                     else
                     {
                         pedido = new VendaModel { IdCliente = cid.Value, ValorTotal = 0 };
-                        cliente.Pedidos.Add(pedido);
+                        cliente.Vendas.Add(pedido);
                         await _context.SaveChangesAsync();
                     }
                     return RedirectToAction("Index", "ItemVenda", new { vend = pedido.IdVenda });

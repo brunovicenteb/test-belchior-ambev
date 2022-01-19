@@ -3,7 +3,7 @@
 @{
     var controllerAtual = ViewContext.RouteData.Values["controller"].ToString();
     var classeMenuPrincipal = controllerAtual == "Home" ? "active" : "";
-    var classeMenuProdutos = controllerAtual == "Cervejas" ? "active" : "";
+    var classeMenuProdutos = controllerAtual == "Cerveja" ? "active" : "";
     var classeMenuClientes = controllerAtual == "Cliente" ? "active" : "";
 }
 
@@ -23,16 +23,15 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">AmbevWeb</a>
+            <a class="navbar-brand" href="/">Ambev Web</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarMain">
                 <div class="navbar-nav ms-auto">
-                    <a class="nav-link @classeMenuPrincipal" asp-controller="Home" asp-action="Index">Principal</a>
-                    <a class="nav-link @classeMenuProdutos" asp-controller="Cerveja" asp-action="Index">Cervejas</a>
-                    <a class="nav-link @classeMenuClientes" asp-controller="Cliente"
-                        asp-action="Index">Clientes</a>
+                    <a class="nav-link @classeMenuPrincipal" asp-controller="Home" asp-action="Index"><i class="bi bi-shop" title="Home"></i>Home</a>
+                    <a class="nav-link @classeMenuProdutos" asp-controller="Cerveja" asp-action="Index"><i class="bi-cup-straw" title="Cervejas"></i>Cervejas</a>
+                    <a class="nav-link @classeMenuClientes" asp-controller="Cliente" asp-action="Index"><i class="bi-person" title="Clientes"></i>Clientes</a>
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@ namespace AmbevWeb.Models
         public DbSet<CashBackModel> CashBack { get; set; }
         public DbSet<ClienteModel> Clientes { get; set; }
         public DbSet<VendaModel> Vendas { get; set; }
-        public DbSet<ItemVendaModel> ItensPedidos { get; set; }
+        public DbSet<ItemVendaModel> ItensVendas { get; set; }
 
         public AmbevContext(DbContextOptions<AmbevContext> options)
             : base(options)

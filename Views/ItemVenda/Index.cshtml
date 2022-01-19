@@ -14,7 +14,7 @@
     @if (!venda.DataVenda.HasValue)
     {
         <div>
-            <a asp-action="Cadastrar" asp-route-ped="@venda.IdVenda" class="btn btn-primary">Novo Item</a>
+            <a asp-action="Cadastrar" asp-route-vend="@venda.IdVenda" class="btn btn-primary">Novo Item</a>
         </div>
     }
 </header>
@@ -49,9 +49,9 @@
                     @if (!venda.DataVenda.HasValue)
                     {
                         <td>
-                            <a asp-action="Cadastrar" asp-route-ped="@itemVenda.IdVenda" asp-route-prod="@itemVenda.IdCerveja"
+                            <a asp-action="Cadastrar" asp-route-vend="@itemVenda.IdVenda" asp-route-prod="@itemVenda.IdCerveja"
                     class="btn btn-sm btn-secondary"><i class="bi-pencil" title="Alterar"></i></a>
-                            <a asp-action="Excluir" asp-route-ped="@itemVenda.IdVenda" asp-route-prod="@itemVenda.IdCerveja"
+                            <a asp-action="Excluir" asp-route-vend="@itemVenda.IdVenda" asp-route-prod="@itemVenda.IdCerveja"
                     class="btn btn-sm btn-danger"><i class="bi-trash" title="Excluir"></i></a>
                         </td>
                     }
@@ -77,7 +77,7 @@ else
 }
 
 <div class="d-flex justify-content-end align-items-center gap-2">
-    <a asp-action="Index" asp-controller="Pedido" asp-route-cid="@venda.IdCliente"
+    <a asp-action="Index" asp-controller="Venda" asp-route-cid="@venda.IdCliente"
         class="btn btn-outline-success">Voltar</a>
     @if (!venda.DataVenda.HasValue && venda.ItensVenda.Count() > 0)
     {
