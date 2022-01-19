@@ -9,21 +9,21 @@ namespace AmbevWeb.Controllers
 {
     public class VendaController : Controller
     {
-        private readonly AmbevContext _context;
+        private readonly AmbevContext _Context;
 
-        public VendaController(AmbevContext context)
+        public VendaController(AmbevContext pContext)
         {
-            this._context = context;
+            _Context = pContext;
         }
 
         public async Task<IActionResult> Index(int? cid)
         {
             if (cid.HasValue)
             {
-                var cliente = await _context.Clientes.FindAsync(cid);
+                var cliente = await _Context.Clientes.FindAsync(cid);
                 if (cliente != null)
                 {
-                    var vendas = await _context.Vendas
+                    var vendas = await _Context.Vendas
                         .Where(p => p.IdCliente == cid)
                         .OrderByDescending(x => x.IdVenda)
                         .AsNoTracking().ToListAsync();
@@ -51,23 +51,23 @@ namespace AmbevWeb.Controllers
         {
             if (cid.HasValue)
             {
-                var cliente = await _context.Clientes.FindAsync(cid);
+                var cliente = await _Context.Clientes.FindAsync(cid);
                 if (cliente != null)
                 {
-                    _context.Entry(cliente).Collection(c => c.Vendas).Load();
-                    VendaModel pedido = null;
-                    if (_context.Vendas.Any(p => p.IdCliente == cid && !p.DataVenda.HasValue))
+                    VendaModel venda = null;
+                    _Context.Entry(cliente).Collection(c => c.Vendas).Load();
+                    if (_Context.Vendas.Any(p => p.IdCliente == cid && !p.DataVenda.HasValue))
                     {
-                        pedido = await _context.Vendas
+                        venda = await _Context.Vendas
                             .FirstOrDefaultAsync(p => p.IdCliente == cid && !p.DataVenda.HasValue);
                     }
                     else
                     {
-                        pedido = new VendaModel { IdCliente = cid.Value, ValorTotal = 0, CashBack = 0 };
-                        cliente.Vendas.Add(pedido);
-                        await _context.SaveChangesAsync();
+                        venda = new VendaModel { IdCliente = cid.Value, ValorTotal = 0, CashBack = 0 };
+                        cliente.Vendas.Add(venda);
+                        await _Context.SaveChangesAsync();
                     }
-                    return RedirectToAction("Index", "ItemVenda", new { vend = pedido.IdVenda });
+                    return RedirectToAction("Index", "ItemVenda", new { vend = venda.IdVenda });
                 }
                 TempData["mensagem"] = MensagemModel.Serializar("Cliente não encontrado", TipoMensagem.Erro);
                 return RedirectToAction("Index", "Cliente");
@@ -78,7 +78,7 @@ namespace AmbevWeb.Controllers
 
         private bool VendaExiste(int id)
         {
-            return _context.Vendas.Any(x => x.IdVenda == id);
+            return _Context.Vendas.Any(x => x.IdVenda == id);
         }
 
         [HttpPost]
@@ -90,8 +90,8 @@ namespace AmbevWeb.Controllers
                 {
                     if (VendaExiste(id.Value))
                     {
-                        _context.Vendas.Update(pedido);
-                        if (await _context.SaveChangesAsync() > 0)
+                        _Context.Vendas.Update(pedido);
+                        if (await _Context.SaveChangesAsync() > 0)
                         {
                             TempData["mensagem"] = MensagemModel.Serializar("Venda alterada com sucesso.");
                         }
@@ -107,8 +107,8 @@ namespace AmbevWeb.Controllers
                 }
                 else
                 {
-                    _context.Vendas.Add(pedido);
-                    if (await _context.SaveChangesAsync() > 0)
+                    _Context.Vendas.Add(pedido);
+                    if (await _Context.SaveChangesAsync() > 0)
                     {
                         TempData["mensagem"] = MensagemModel.Serializar("Venda incluída com sucesso.");
                     }
@@ -140,7 +140,7 @@ namespace AmbevWeb.Controllers
                 return RedirectToAction("Index", "Cliente");
             }
 
-            var venda = await _context.Vendas
+            var venda = await _Context.Vendas
                 .Include(p => p.Cliente)
                 .Include(p => p.ItensVenda)
                 .ThenInclude(i => i.Cerveja)
@@ -152,12 +152,12 @@ namespace AmbevWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Excluir(int id)
         {
-            VendaModel vendaModel = await _context.Vendas.FindAsync(id);
+            VendaModel vendaModel = await _Context.Vendas.FindAsync(id);
             var venda = vendaModel;
             if (venda != null)
             {
-                _context.Vendas.Remove(venda);
-                if (await _context.SaveChangesAsync() > 0)
+                _Context.Vendas.Remove(venda);
+                if (await _Context.SaveChangesAsync() > 0)
                     TempData["mensagem"] = MensagemModel.Serializar("Venda excluída com sucesso.");
                 else
                     TempData["mensagem"] = MensagemModel.Serializar("Não foi possível excluir a venda.", TipoMensagem.Erro);
@@ -185,7 +185,7 @@ namespace AmbevWeb.Controllers
                 return RedirectToAction("Index", "Cliente");
             }
 
-            var venda = await _context.Vendas
+            var venda = await _Context.Vendas
                 .Include(p => p.Cliente)
                 .Include(p => p.ItensVenda)
                 .ThenInclude(i => i.Cerveja)
@@ -199,7 +199,7 @@ namespace AmbevWeb.Controllers
         {
             if (VendaExiste(id))
             {
-                var venda = await _context.Vendas
+                var venda = await _Context.Vendas
                     .Include(p => p.Cliente)
                     .Include(p => p.ItensVenda)
                     .ThenInclude(i => i.Cerveja)
@@ -210,7 +210,7 @@ namespace AmbevWeb.Controllers
                     venda.DataVenda = DateTime.Now;
                     foreach (var item in venda.ItensVenda)
                         item.Cerveja.Estoque -= item.Quantidade;
-                    if (await _context.SaveChangesAsync() > 0)
+                    if (await _Context.SaveChangesAsync() > 0)
                         TempData["mensagem"] = MensagemModel.Serializar("Venda fechada com sucesso.");
                     else
                         TempData["mensagem"] = MensagemModel.Serializar("Não foi possível fechar a venda.", TipoMensagem.Erro);
@@ -244,7 +244,7 @@ namespace AmbevWeb.Controllers
                 return RedirectToAction("Index", "Cliente");
             }
 
-            var pedido = await _context.Vendas
+            var pedido = await _Context.Vendas
                 .Include(p => p.Cliente)
                 .Include(p => p.ItensVenda)
                 .ThenInclude(i => i.Cerveja)
@@ -261,9 +261,9 @@ namespace AmbevWeb.Controllers
                 TempData["mensagem"] = MensagemModel.Serializar("Venda não encontrado.", TipoMensagem.Erro);
                 return RedirectToAction("Index", "Cliente");
             }
-            var venda = await _context.Vendas.FindAsync(idVenda);
+            var venda = await _Context.Vendas.FindAsync(idVenda);
             venda.DataEntrega = DateTime.Now;
-            if (await _context.SaveChangesAsync() > 0)
+            if (await _Context.SaveChangesAsync() > 0)
                 TempData["mensagem"] = MensagemModel.Serializar("Entrega de venda registrada com sucesso.");
             else
                 TempData["mensagem"] = MensagemModel.Serializar("Não foi possível registrar a entrega da venda.", TipoMensagem.Erro);

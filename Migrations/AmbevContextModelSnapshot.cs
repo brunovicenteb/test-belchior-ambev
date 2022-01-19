@@ -480,7 +480,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 1,
                             Email = "natalie.portman@ambev.com.br",
                             Nome = "Natalie Portman",
-                            Senha = "123456",
+                            Senha = "c157a6c950350e1cff1c37cd370782ce",
                             CPF = "791.647.240-69",
                             DataNascimento = new DateTime(1981, 6, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -489,7 +489,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 2,
                             Email = "penelope.cruz@ambev.com.br",
                             Nome = "Penelope Cruz",
-                            Senha = "123456",
+                            Senha = "7688ab571b8c9112c74f634b0942c5f4",
                             CPF = "409.579.270-10",
                             DataNascimento = new DateTime(1981, 6, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -498,7 +498,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 3,
                             Email = "sharon.stone@ambev.com.br",
                             Nome = "Sharon Stone",
-                            Senha = "123456",
+                            Senha = "03d93326278650c09d0f825734230724",
                             CPF = "616.150.370-04",
                             DataNascimento = new DateTime(1958, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -507,7 +507,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 4,
                             Email = "jennifer.connelly@ambev.com.br",
                             Nome = "Jennifer Connelly",
-                            Senha = "123456",
+                            Senha = "fad05d338687a585d335d6d122034990",
                             CPF = "345.930.500-22",
                             DataNascimento = new DateTime(1970, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -516,7 +516,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 5,
                             Email = "scarlett.johansson@ambev.com.br",
                             Nome = "Scarlett Johansson",
-                            Senha = "123456",
+                            Senha = "318faad8da75364f28d3af4c01cf8783",
                             CPF = "139.385.260-25",
                             DataNascimento = new DateTime(1984, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -525,7 +525,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 6,
                             Email = "liv.tyler@ambev.com.br",
                             Nome = "Liv Tyler",
-                            Senha = "123456",
+                            Senha = "d2137db845f757d43f654f8eabc80762",
                             CPF = "932.830.890-94",
                             DataNascimento = new DateTime(1977, 6, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -534,7 +534,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 7,
                             Email = "jennifer.lopez@ambev.com.br",
                             Nome = "Jennifer Lopez",
-                            Senha = "123456",
+                            Senha = "d30579c85039820a61f8426c5a12704d",
                             CPF = "074.477.660-03",
                             DataNascimento = new DateTime(1969, 6, 24, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -543,16 +543,16 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 8,
                             Email = "gal.gadot@ambev.com.br",
                             Nome = "Gal Gadot",
-                            Senha = "123456",
+                            Senha = "4fdf95910c5e7817123b3e09936e853f",
                             CPF = "760.947.580-72",
                             DataNascimento = new DateTime(1985, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             IdUsuario = 9,
-                            Email = "odette.annable.com.br",
+                            Email = "odette.annable@com.br",
                             Nome = "Odette Annable",
-                            Senha = "123456",
+                            Senha = "5f87be8e29c305ccd4ee19b0dd898f2b",
                             CPF = "141.237.860-57",
                             DataNascimento = new DateTime(1985, 5, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -561,7 +561,7 @@ namespace AmbevWeb.Migrations
                             IdUsuario = 10,
                             Email = "jennifer.lawrence@ambev.com.br",
                             Nome = "Jennifer Lawrence",
-                            Senha = "123456",
+                            Senha = "c4ad31baad701357a17d7389aa68b7e8",
                             CPF = "290.137.010-19",
                             DataNascimento = new DateTime(1990, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });

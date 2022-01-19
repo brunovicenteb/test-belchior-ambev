@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace AmbevWeb
 {
@@ -23,7 +24,10 @@ namespace AmbevWeb
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews()
+                  .AddRazorRuntimeCompilation()
+                  .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddDbContext<AmbevContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("AmbevWebContext")));
         }
@@ -36,7 +40,6 @@ namespace AmbevWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                //endpoints.MapGet(BeerCerveja);
             });
         }
     }

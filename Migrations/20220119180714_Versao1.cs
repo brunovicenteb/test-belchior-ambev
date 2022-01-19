@@ -231,52 +231,52 @@ namespace AmbevWeb.Migrations
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 9, "odette.annable.com.br", "Odette Annable", "123456" });
+                values: new object[] { 9, "odette.annable@com.br", "Odette Annable", "5f87be8e29c305ccd4ee19b0dd898f2b" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 10, "jennifer.lawrence@ambev.com.br", "Jennifer Lawrence", "123456" });
+                values: new object[] { 10, "jennifer.lawrence@ambev.com.br", "Jennifer Lawrence", "c4ad31baad701357a17d7389aa68b7e8" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 7, "jennifer.lopez@ambev.com.br", "Jennifer Lopez", "123456" });
+                values: new object[] { 7, "jennifer.lopez@ambev.com.br", "Jennifer Lopez", "d30579c85039820a61f8426c5a12704d" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 6, "liv.tyler@ambev.com.br", "Liv Tyler", "123456" });
+                values: new object[] { 6, "liv.tyler@ambev.com.br", "Liv Tyler", "d2137db845f757d43f654f8eabc80762" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 5, "scarlett.johansson@ambev.com.br", "Scarlett Johansson", "123456" });
+                values: new object[] { 5, "scarlett.johansson@ambev.com.br", "Scarlett Johansson", "318faad8da75364f28d3af4c01cf8783" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 4, "jennifer.connelly@ambev.com.br", "Jennifer Connelly", "123456" });
+                values: new object[] { 4, "jennifer.connelly@ambev.com.br", "Jennifer Connelly", "fad05d338687a585d335d6d122034990" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 3, "sharon.stone@ambev.com.br", "Sharon Stone", "123456" });
+                values: new object[] { 3, "sharon.stone@ambev.com.br", "Sharon Stone", "03d93326278650c09d0f825734230724" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 2, "penelope.cruz@ambev.com.br", "Penelope Cruz", "123456" });
+                values: new object[] { 2, "penelope.cruz@ambev.com.br", "Penelope Cruz", "7688ab571b8c9112c74f634b0942c5f4" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 1, "natalie.portman@ambev.com.br", "Natalie Portman", "123456" });
+                values: new object[] { 1, "natalie.portman@ambev.com.br", "Natalie Portman", "c157a6c950350e1cff1c37cd370782ce" });
 
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "IdUsuario", "Email", "Nome", "Senha" },
-                values: new object[] { 8, "gal.gadot@ambev.com.br", "Gal Gadot", "123456" });
+                values: new object[] { 8, "gal.gadot@ambev.com.br", "Gal Gadot", "4fdf95910c5e7817123b3e09936e853f" });
 
             migrationBuilder.InsertData(
                 table: "CashBack",
