@@ -1,5 +1,6 @@
-using AmbevWeb.Models;
+using System;
 using System.Linq;
+using AmbevWeb.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,15 +25,18 @@ namespace AmbevWeb.Controllers
             return Ok();
         }
 
-        //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarCervejas/id?=x&name=y
-        [HttpGet("ConsultarCervejas/{page?}/{name?}")]
-        public async Task<IActionResult> ConsultarCervejas(int? page = 0, string name = null)
+        //http://{host}:{porta}/api/ConsultarCervejas?pagina=xx&nome=yy
+        [HttpGet("ConsultarCervejas/{pagina?}/{nome?}")]
+        public async Task<IActionResult> ConsultarCervejas(int? pagina = 0, string nome = null)
         {
-            bool noFilter = string.IsNullOrEmpty(name);
-            name = noFilter ? name : name.ToLower();
-            int jump = (page ?? 0) * _PageSize;
+            // Paginando [OK]
+            // Filtrando por nome [OK]
+            // Ordenar por nome de forma crescente [OK]
+            bool noFilter = string.IsNullOrEmpty(nome);
+            nome = noFilter ? nome : nome.ToLower();
+            int jump = (pagina ?? 0) * _PageSize;
             var beer = await _Context.Cervejas
-                .Where(o => noFilter || o.Nome.ToLower().Contains(name))
+                .Where(o => noFilter || o.Nome.ToLower().Contains(nome))
                 .OrderBy(o => o.Nome)
                 .Skip(jump)
                 .Take(_PageSize)
@@ -40,7 +44,7 @@ namespace AmbevWeb.Controllers
             return Ok(beer);
         }
 
-        //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarCervejaPeloIdentificador/id
+        //http://{host}:{porta}/api/ConsultarCervejaPeloIdentificador?id=xx
         [HttpGet("ConsultarCervejaPeloIdentificador/{id?}")]
         public async Task<IActionResult> ConsultarCervejaPeloIdentificador(int? id = null)
         {
@@ -52,10 +56,12 @@ namespace AmbevWeb.Controllers
             return Ok(beer);
         }
 
-        //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarVendaPeloIdentificador/id
+        //http://{host}:{porta}/api/ConsultarVendaPeloIdentificador?id=xx
         [HttpGet("ConsultarVendaPeloIdentificador/{id}")]
-        public async Task<IActionResult> ConsultarVendaPeloIdentificador(int id)
+        public async Task<IActionResult> ConsultarVendaPeloIdentificador(int? id = null)
         {
+            if (!id.HasValue)
+                return NotFound("Nenhum identificador de venda foi informado.");
             var venda = await _Context.Vendas
                 .Include(p => p.Cliente)
                 .Include(p => p.ItensVenda)
@@ -66,30 +72,28 @@ namespace AmbevWeb.Controllers
             return Ok(venda);
         }
 
-        //Mapeia as requisições GET para http://{host}:{porta}/api/ConsultarVendas/id
-        [HttpGet("ConsultarVendas/{page?}")]
-        public async Task<IActionResult> ConsultarVendas(int? page = 0)
+        //http://{host}:{porta}/api/ConsultarVendas?pagina=xx&inicio=yy&final=zz
+        [HttpGet("ConsultarVendas/{pagina?}/{inicio?}/{final?}")]
+        public async Task<IActionResult> ConsultarVendas(int? pagina = 0, DateTime? inicio = null, DateTime? final = null)
         {
-            int jump = (page ?? 0) * _PageSize;
+            // Páginando [OK]
+            // Ordenando de forma decrescente pela data do início da venda [OK]
+            // Range [OK]
+            int jump = (pagina ?? 0) * _PageSize;
+            string debug = !inicio.HasValue ? "Início não chegou" : inicio.Value.ToString("dd/MM/yyyy mm:HH:ss");
+            debug += "   <===>   " + (!final.HasValue ? "Final não chegou" : final.Value.ToString("dd/MM/yyyy mm:HH:ss"));
+            Console.WriteLine(debug);
             var vendas = await _Context.Vendas
+                .Where(o => (!inicio.HasValue || o.InicioVenda >= inicio.Value) &&
+                            (!final.HasValue || o.InicioVenda <= final.Value))
                 .OrderByDescending(o => o.InicioVenda)
                 .Skip(jump)
                 .Take(_PageSize)
-                .Include(o=>o.Cliente)
-                .Include(o=>o.ItensVenda)
+                .Include(o => o.Cliente)
+                .Include(o => o.ItensVenda)
                 .AsNoTracking().ToListAsync();
             return Ok(vendas);
         }
-
-        // Páginada OK
-        // Ordenando de forma decrescente pela data da venda OK        
-        // Range not yet
-
-
-        /*         Consultar todas as vendas efetuadas de forma paginada, filtrando pelo range
-        de datas (inicial e final) da venda e ordenando de forma decrescente pela data
-        da venda;  */
-
 
         // //Mapeia as requisições POST para http://localhost:{porta}/api/person/
         // //O [FromBody] consome o Objeto JSON enviado no corpo da requisição
