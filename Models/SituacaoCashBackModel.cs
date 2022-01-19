@@ -15,11 +15,14 @@ namespace AmbevWeb.Models
         [Required, MaxLength(32)]
         public string Nome { get; set; }
 
+        public static readonly int DisponivelID = 1;
+        public static readonly int ResgatadoID = 2;
+
         public static void Seed(ModelBuilder pModelBuilder)
         {
             pModelBuilder.Entity<SituacaoCashBackModel>().HasData(
-                new SituacaoCashBackModel { IdSituacaoCashBack = 1, Nome = "Disponível" }, 
-                new SituacaoCashBackModel { IdSituacaoCashBack = 2, Nome = "Resgatado" }
+                new SituacaoCashBackModel { IdSituacaoCashBack = DisponivelID, Nome = "Disponível" },
+                new SituacaoCashBackModel { IdSituacaoCashBack = ResgatadoID, Nome = "Resgatado" }
             );
         }
     }

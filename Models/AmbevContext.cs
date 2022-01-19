@@ -6,7 +6,7 @@ namespace AmbevWeb.Models
     public class AmbevContext : DbContext
     {
         public DbSet<CervejaModel> Cervejas { get; set; }
-        public DbSet<CervejaModel> DiaDaSemana { get; set; }
+        public DbSet<DiaDaSemanaModel> DiaDaSemana { get; set; }
         public DbSet<SituacaoCashBackModel> SituacaoCashBack { get; set; }
         public DbSet<CashBackModel> CashBack { get; set; }
         public DbSet<ClienteModel> Clientes { get; set; }

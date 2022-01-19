@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AmbevWeb.Models;
@@ -85,8 +86,23 @@ namespace AmbevWeb.Controllers
                 {
                     var cerveja = await _Context.Cervejas.FindAsync(itemVenda.IdCerveja);
                     itemVenda.ValorUnitario = cerveja.Preco;
-                    itemVenda.IdCashBack = 1;
-                    itemVenda.IdSituacaoCashBack = 1;
+                    itemVenda.IdSituacaoCashBack = SituacaoCashBackModel.DisponivelID;
+                    int diaSemanaNum = Convert.ToInt32(DateTime.Now.DayOfWeek) + 1; // Nosso dia da semana no BD começa em 0;
+                    var diaSemana = await _Context.DiaDaSemana.
+                        Where(o => o.IdDiaDaSemana == diaSemanaNum).SingleOrDefaultAsync();
+                    if (diaSemana == null)
+                    {
+                        TempData["mensagem"] = MensagemModel.Serializar("Não foi possível obter o Dia a Semana para calcular o CashBack.");
+                        return RedirectToAction("Index", new { vend = itemVenda.IdVenda });
+                    }
+                    var cashBack = await _Context.CashBack.Where(o => o.IdCerveja == itemVenda.IdCerveja && o.IdDiaDaSemana == diaSemana.IdDiaDaSemana).
+                        SingleOrDefaultAsync();
+                    if (cashBack == null)
+                    {
+                        TempData["mensagem"] = MensagemModel.Serializar("Não foi possível obter o CashBack configurado para o produto.");
+                        return RedirectToAction("Index", new { vend = itemVenda.IdVenda });
+                    }                        
+                    itemVenda.IdCashBack = cashBack.IdCachBack;
                     if (ItemVendaExiste(itemVenda.IdVenda, itemVenda.IdCerveja))
                     {
                         _Context.ItensVendas.Update(itemVenda);
@@ -99,7 +115,7 @@ namespace AmbevWeb.Controllers
                     {
                         _Context.ItensVendas.Add(itemVenda);
                         if (await _Context.SaveChangesAsync() > 0)
-                            TempData["mensagem"] = MensagemModel.Serializar("Item de vemda cadastrado com sucesso.");
+                            TempData["mensagem"] = MensagemModel.Serializar("Item de venda cadastrado com sucesso.");
                         else
                             TempData["mensagem"] = MensagemModel.Serializar("Erro ao cadastrar item de venda.", TipoMensagem.Erro);
                     }
