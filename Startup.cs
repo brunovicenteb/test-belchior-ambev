@@ -36,6 +36,7 @@ namespace AmbevWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                //endpoints.MapGet(BeerCerveja);
             });
         }
     }

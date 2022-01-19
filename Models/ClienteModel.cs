@@ -19,13 +19,6 @@ namespace AmbevWeb.Models
         {
             get => (int)Math.Floor((DateTime.Now - DataNascimento).TotalDays / 365.2425);
         }
-
-        [NotMapped]
-        public double CashBack
-        {
-            get => 0;
-        }
-
         public ICollection<VendaModel> Vendas { get; set; }
 
         public static void Seed(ModelBuilder pModelBuilder)

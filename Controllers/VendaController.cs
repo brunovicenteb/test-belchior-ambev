@@ -23,13 +23,13 @@ namespace AmbevWeb.Controllers
                 var cliente = await _context.Clientes.FindAsync(cid);
                 if (cliente != null)
                 {
-                    var pedidos = await _context.Vendas
+                    var vendas = await _context.Vendas
                         .Where(p => p.IdCliente == cid)
                         .OrderByDescending(x => x.IdVenda)
                         .AsNoTracking().ToListAsync();
 
                     ViewBag.Cliente = cliente;
-                    return View(pedidos);
+                    return View(vendas);
                 }
                 else
                 {

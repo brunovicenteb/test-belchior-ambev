@@ -13,6 +13,8 @@ nupkg/
 
 #dbfiles
 *.db
+*.db-shm
+*.db-wal
 
 # User-specific files
 *.suo
