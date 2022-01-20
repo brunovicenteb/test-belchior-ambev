@@ -347,8 +347,10 @@ namespace AmbevWeb.Migrations
 
             modelBuilder.Entity("AmbevWeb.Models.ItemVendaModel", b =>
                 {
-                    b.Property<int>("IdItemVenda")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("IdVenda")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IdCerveja")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("FracaoCachBack")
@@ -357,13 +359,7 @@ namespace AmbevWeb.Migrations
                     b.Property<int>("IdCashBack")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("IdCerveja")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("IdSituacaoCashBack")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("IdVenda")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantidade")
@@ -372,11 +368,9 @@ namespace AmbevWeb.Migrations
                     b.Property<double>("ValorUnitario")
                         .HasColumnType("REAL");
 
-                    b.HasKey("IdItemVenda");
+                    b.HasKey("IdVenda", "IdCerveja");
 
                     b.HasIndex("IdCerveja");
-
-                    b.HasIndex("IdVenda");
 
                     b.ToTable("ItemVenda");
                 });

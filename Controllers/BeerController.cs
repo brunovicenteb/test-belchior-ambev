@@ -59,7 +59,7 @@ namespace AmbevWeb.Controllers
         }
 
         //http://{host}:{porta}/api/ConsultarVendaPeloIdentificador?id=xx
-        [HttpGet("ConsultarVendaPeloIdentificador/{id}")]
+        [HttpGet("ConsultarVendaPeloIdentificador/{id?}")]
         public async Task<IActionResult> ConsultarVendaPeloIdentificador(int? id = null)
         {
             if (!id.HasValue)
