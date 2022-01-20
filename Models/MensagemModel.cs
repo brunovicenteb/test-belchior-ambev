@@ -10,8 +10,14 @@ namespace AmbevWeb.Models
 
     public class MensagemModel
     {
-        public TipoMensagem Tipo { get; set; }
-        public string Texto { get; set; }
+        public TipoMensagem Tipo
+        {
+            get; set;
+        }
+        public string Texto
+        {
+            get; set;
+        }
         public MensagemModel(string mensagem, TipoMensagem tipo = TipoMensagem.Informacao)
         {
             this.Tipo = tipo;
@@ -21,7 +27,8 @@ namespace AmbevWeb.Models
         public static string Serializar(string mensagem, TipoMensagem tipo = TipoMensagem.Informacao)
         {
             var mensagemModel = new MensagemModel(mensagem, tipo);
-            return JsonConvert.SerializeObject(mensagemModel);
+            string ret = JsonConvert.SerializeObject(mensagemModel);
+            return ret;
         }
 
         public static MensagemModel Desserializar(string mensagemString)

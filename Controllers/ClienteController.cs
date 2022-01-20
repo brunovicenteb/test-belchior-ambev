@@ -1,12 +1,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AmbevWeb.Models;
+using AmbevWeb.RulePipeline;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AmbevWeb.Utils;
 
 namespace AmbevWeb.Controllers
 {
-    public class ClienteController : Controller
+    public class ClienteController : XUiController
     {
         private readonly AmbevContext _context;
 
@@ -43,49 +45,69 @@ namespace AmbevWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Cadastrar(int? id, [FromForm] ClienteModel cliente)
+        public IActionResult Cadastrar(int? id, [FromForm] ClienteModel pCliente)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(pCliente);
+            XSalesPipeline p = new XSalesPipeline();
+            p.Register(new XCustomerTask(id, pCliente));
+            XSalesReturn sr = p.Process(_context);
+            switch (sr.Result)
             {
-                if (id.HasValue)
-                {
-                    if (ClienteExiste(id.Value))
-                    {
-                        _context.Clientes.Update(cliente);
-                        _context.Entry(cliente).Property(x => x.Senha).IsModified = false;
-                        if (await _context.SaveChangesAsync() > 0)
-                        {
-                            TempData["mensagem"] = MensagemModel.Serializar("Cliente alterado com sucesso.");
-                        }
-                        else
-                        {
-                            TempData["mensagem"] = MensagemModel.Serializar("Erro ao alterar cliente.", TipoMensagem.Erro);
-                        }
-                    }
-                    else
-                    {
-                        TempData["mensagem"] = MensagemModel.Serializar("Cliente não encontrado.", TipoMensagem.Erro);
-                    }
-                }
-                else
-                {
-                    _context.Clientes.Add(cliente);
-                    if (await _context.SaveChangesAsync() > 0)
-                    {
-                        TempData["mensagem"] = MensagemModel.Serializar("Cliente cadastrado com sucesso.");
-                    }
-                    else
-                    {
-                        TempData["mensagem"] = MensagemModel.Serializar("Erro ao cadastrar cliente.", TipoMensagem.Erro);
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                case XSalesResult.Sucess:
+                    RegistraSucesso(sr.Message);
+                    break;
+                default:
+                    RegistraFalha(sr.Message);
+                    break;
             }
-            else
-            {
-                return View(cliente);
-            }
+            return RedirectToAction(nameof(Index));
         }
+
+        //[HttpPost]
+        //public async Task<IActionResult> Cadastrar(int? id, [FromForm] ClienteModel cliente)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (id.HasValue)
+        //        {
+        //            if (ClienteExiste(id.Value))
+        //            {
+        //                _context.Clientes.Update(cliente);
+        //                _context.Entry(cliente).Property(x => x.Senha).IsModified = false;
+        //                if (await _context.SaveChangesAsync() > 0)
+        //                {
+        //                    TempData["mensagem"] = MensagemModel.Serializar("Cliente alterado com sucesso.");
+        //                }
+        //                else
+        //                {
+        //                    TempData["mensagem"] = MensagemModel.Serializar("Erro ao alterar cliente.", TipoMensagem.Erro);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                TempData["mensagem"] = MensagemModel.Serializar("Cliente não encontrado.", TipoMensagem.Erro);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            _context.Clientes.Add(cliente);
+        //            if (await _context.SaveChangesAsync() > 0)
+        //            {
+        //                TempData["mensagem"] = MensagemModel.Serializar("Cliente cadastrado com sucesso.");
+        //            }
+        //            else
+        //            {
+        //                TempData["mensagem"] = MensagemModel.Serializar("Erro ao cadastrar cliente.", TipoMensagem.Erro);
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    else
+        //    {
+        //        return View(cliente);
+        //    }
+        //}
 
         [HttpGet]
         public async Task<IActionResult> Excluir(int? id)
