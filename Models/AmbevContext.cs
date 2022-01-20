@@ -35,8 +35,9 @@ namespace AmbevWeb.Models
                 .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             pModelBuilder.Entity<CervejaModel>().Property(p => p.Estoque)
                 .HasDefaultValue(0);
-            pModelBuilder.Entity<ItemVendaModel>()
-                .HasKey(ip => new { ip.IdVenda, ip.IdCerveja });
+                
+            // pModelBuilder.Entity<ItemVendaModel>()
+            //     .HasKey(ip => new { ip.IdVenda, ip.IdCerveja });
 
             CervejaModel.Seed(pModelBuilder);
             DiaDaSemanaModel.Seed(pModelBuilder);

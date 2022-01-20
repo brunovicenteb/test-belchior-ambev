@@ -139,6 +139,8 @@ namespace AmbevWeb.Migrations
                 name: "ItemVenda",
                 columns: table => new
                 {
+                    IdItemVenda = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     IdVenda = table.Column<int>(type: "INTEGER", nullable: false),
                     IdCerveja = table.Column<int>(type: "INTEGER", nullable: false),
                     IdCashBack = table.Column<int>(type: "INTEGER", nullable: false),
@@ -149,7 +151,7 @@ namespace AmbevWeb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemVenda", x => new { x.IdVenda, x.IdCerveja });
+                    table.PrimaryKey("PK_ItemVenda", x => x.IdItemVenda);
                     table.ForeignKey(
                         name: "FK_ItemVenda_Cerveja_IdCerveja",
                         column: x => x.IdCerveja,
@@ -483,6 +485,11 @@ namespace AmbevWeb.Migrations
                 name: "IX_ItemVenda_IdCerveja",
                 table: "ItemVenda",
                 column: "IdCerveja");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemVenda_IdVenda",
+                table: "ItemVenda",
+                column: "IdVenda");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Venda_IdCliente",

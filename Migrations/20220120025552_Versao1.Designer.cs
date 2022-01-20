@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmbevWeb.Migrations
 {
     [DbContext(typeof(AmbevContext))]
-    [Migration("20220119194432_Versao1")]
+    [Migration("20220120025552_Versao1")]
     partial class Versao1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -349,10 +349,8 @@ namespace AmbevWeb.Migrations
 
             modelBuilder.Entity("AmbevWeb.Models.ItemVendaModel", b =>
                 {
-                    b.Property<int>("IdVenda")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("IdCerveja")
+                    b.Property<int>("IdItemVenda")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("FracaoCachBack")
@@ -361,7 +359,13 @@ namespace AmbevWeb.Migrations
                     b.Property<int>("IdCashBack")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("IdCerveja")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("IdSituacaoCashBack")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IdVenda")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantidade")
@@ -370,9 +374,11 @@ namespace AmbevWeb.Migrations
                     b.Property<double>("ValorUnitario")
                         .HasColumnType("REAL");
 
-                    b.HasKey("IdVenda", "IdCerveja");
+                    b.HasKey("IdItemVenda");
 
                     b.HasIndex("IdCerveja");
+
+                    b.HasIndex("IdVenda");
 
                     b.ToTable("ItemVenda");
                 });

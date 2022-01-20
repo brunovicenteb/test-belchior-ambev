@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AmbevWeb.Models
@@ -5,10 +6,9 @@ namespace AmbevWeb.Models
     [Table("ItemVenda")]
     public class ItemVendaModel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key]
+        public int IdItemVenda { get; set; }
         public int IdVenda { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdCerveja { get; set; }
         public int IdCashBack { get; set; }
         public int IdSituacaoCashBack { get; set; }

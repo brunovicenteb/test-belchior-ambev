@@ -4,6 +4,8 @@ using AmbevWeb.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections.Generic;
 
 namespace AmbevWeb.Controllers
 {
@@ -49,10 +51,10 @@ namespace AmbevWeb.Controllers
         public async Task<IActionResult> ConsultarCervejaPeloIdentificador(int? id = null)
         {
             if (!id.HasValue)
-                return NotFound("Nenhum identificador de cerveja foi informado.");
+                return BadRequest("Nenhum identificador de cerveja foi informado.");
             var beer = await _Context.Cervejas.FindAsync(id);
             if (beer == null)
-                return NotFound("Nenhuma cerveja foi encontrada pelo identificador " + id + ".");
+                return BadRequest("Nenhuma cerveja foi encontrada pelo identificador " + id + ".");
             return Ok(beer);
         }
 
@@ -61,14 +63,14 @@ namespace AmbevWeb.Controllers
         public async Task<IActionResult> ConsultarVendaPeloIdentificador(int? id = null)
         {
             if (!id.HasValue)
-                return NotFound("Nenhum identificador de venda foi informado.");
+                return BadRequest("Nenhum identificador de venda foi informado.");
             var venda = await _Context.Vendas
                 .Include(p => p.Cliente)
                 .Include(p => p.ItensVenda)
                 .ThenInclude(i => i.Cerveja)
                 .SingleOrDefaultAsync(p => p.IdVenda == id);
             if (venda == null)
-                return NotFound("Nenhuma venda foi encontrada pelo identificador " + id + ".");
+                return BadRequest("Nenhuma venda foi encontrada pelo identificador " + id + ".");
             return Ok(venda);
         }
 
@@ -95,31 +97,95 @@ namespace AmbevWeb.Controllers
             return Ok(vendas);
         }
 
-        // //Mapeia as requisições POST para http://localhost:{porta}/api/person/
-        // //O [FromBody] consome o Objeto JSON enviado no corpo da requisição
-        // [HttpPost]
-        // public IActionResult Post([FromBody] Person person)
-        // {
-        //     if (person == null) return BadRequest();
-        //     return new ObjectResult(_personService.Create(person));
-        // }
+        //http://{host}:{porta}/api/RegistrarVendaDeCerveja
+        [HttpPost("RegistrarVendaDeCerveja")]
+        public async Task<IActionResult> RegistrarVendaDeCerveja([FromBody] VendaModel pVenda)
+        {
+            if (pVenda == null)
+                return BadRequest("Nenhum dado válido de venda foi informado.");
+            if (pVenda.IdVenda > 0)
+                return BadRequest("Não é necessário informar um id para a venda.");
+            if (pVenda.ItensVenda == null || pVenda.ItensVenda.Count == 0)
+                return BadRequest("Não é possível gerar uma venda sem nenhum item.");
+            if (pVenda.ItensVenda.Any(o => o.IdCerveja == 0))
+                return BadRequest("Existem itens da venda não vinculados a uma cerveja.");
+            IDbContextTransaction t = null;
+            try
+            {
+                t = await _Context.Database.BeginTransactionAsync();
+                pVenda.Cliente = ManipularCliente(pVenda);
+                pVenda.IdCliente = pVenda.Cliente.IdUsuario;
+                pVenda.IdVenda = ManipularVenda(pVenda);
+                await t.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                await t.RollbackAsync();
+                return BadRequest(e.Message);
+            }
+            return await ConsultarVendaPeloIdentificador(pVenda.IdVenda);
+        }
 
-        // //Mapeia as requisições PUT para http://localhost:{porta}/api/person/
-        // //O [FromBody] consome o Objeto JSON enviado no corpo da requisição
-        // [HttpPut]
-        // public IActionResult Put([FromBody] Person person)
-        // {
-        //     if (person == null) return BadRequest();
-        //     return new ObjectResult(_personService.Update(person));
-        // }
+        private int ManipularVenda(VendaModel pVenda)
+        {
+            foreach (var itmVenda in  pVenda.ItensVenda)
+            {
+                CervejaModel cv = _Context.Cervejas.Find(itmVenda.IdCerveja);
+                if (cv == null)
+                    throw new Exception("Não foi possível encontrar uma cerveja com o id passado no ítem da venda.");
 
-        // //Mapeia as requisições DELETE para http://localhost:{porta}/api/person/{id}
-        // //recebendo um ID como no Path da requisição
-        // [HttpDelete("{id}")]
-        // public IActionResult Delete(string id)
-        // {
-        //     _personService.Delete(id);
-        //     return NoContent();
-        // }
+                itmVenda.IdSituacaoCashBack = SituacaoCashBackModel.DisponivelID;
+                itmVenda.ValorUnitario = cv.Preco;
+
+                int diaSemanaNum = Convert.ToInt32(DateTime.Now.DayOfWeek) + 1; // Nosso dia da semana no BD começa em 0;
+                var diaSemana = _Context.DiaDaSemana.
+                    Where(o => o.IdDiaDaSemana == diaSemanaNum).SingleOrDefault();
+                if (diaSemana == null)
+                    throw new Exception("Não foi possível obter o Dia a Semana para calcular o CashBack.");
+                var cashBack = _Context.CashBack.Where(o => o.IdCerveja == itmVenda.IdCerveja && o.IdDiaDaSemana == diaSemana.IdDiaDaSemana)
+                    .SingleOrDefault();
+                if (cashBack == null)
+                    throw new Exception("Não foi possível obter o CashBack configurado para o produto.");
+
+                itmVenda.IdCashBack = cashBack.IdCachBack;
+                itmVenda.FracaoCachBack = cashBack.Porcentagem / 100;
+            }
+            pVenda.ValorTotal = pVenda.ItensVenda.Sum(i => i.ValorUnitario * i.Quantidade);
+            pVenda.CashBack = pVenda.ItensVenda.Sum(i => i.ValorUnitario * i.Quantidade * i.FracaoCachBack);
+            _Context.Vendas.Add(pVenda);
+            _Context.SaveChanges();
+            return pVenda.IdVenda;
+        }
+
+        private ClienteModel ManipularCliente(VendaModel pVenda)
+        {
+            ClienteModel c = null;
+            if (pVenda.IdCliente > 0)
+            {
+                c = _Context.Clientes.Find(pVenda.IdCliente);
+                if (c == null)
+                    throw new Exception("Não existe cliente com o id informado.");
+                return c;
+            }
+            if (pVenda.Cliente == null)
+                throw new Exception("Nenhuma informação de cliente foi informada.");
+            if (string.IsNullOrEmpty(pVenda.Cliente.Nome))
+                throw new Exception("Informe o nome do cliente.");
+            if (string.IsNullOrEmpty(pVenda.Cliente.CPF) && string.IsNullOrEmpty(pVenda.Cliente.Email))
+                throw new Exception("Informe o e-mail ou o CPF do cliente.");
+            string nome = pVenda.Cliente.Nome.ToLower();
+            c = _Context.Clientes.FirstOrDefault(o => o.Nome.ToLower() == nome &&
+                (o.CPF == pVenda.Cliente.CPF || o.Email == pVenda.Cliente.Email));
+            if (c != null)
+                return c;
+            c = new ClienteModel();
+            c.Nome = pVenda.Cliente.Nome;
+            c.CPF = pVenda.Cliente.CPF ?? string.Empty;
+            c.Email = pVenda.Cliente.Email ?? string.Empty;
+            c.DataNascimento = pVenda.Cliente.DataNascimento;
+            _Context.Clientes.Add(c);
+            _Context.SaveChanges();
+            return c;
+        }
     }
 }
