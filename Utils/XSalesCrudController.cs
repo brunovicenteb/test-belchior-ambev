@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AmbevWeb.Models;
 using AmbevWeb.RulePipeline;
@@ -8,13 +8,21 @@ using AmbevWeb.Utils;
 
 namespace AmbevWeb.Controllers
 {
-    public class ClienteController : XSalesController
+    public abstract class XSalesCrudController<T> : XSalesController where T : class, new()
     {
 
-        public ClienteController(AmbevContext pContext)
+        public XSalesCrudController(AmbevContext pContext, string pTitle, DbSet<T> pDbList)
             : base(pContext)
         {
+            _Title = pTitle;
+            _DbList = pDbList;
         }
+
+        private readonly string _Title;
+        private readonly DbSet<T> _DbList;
+
+        protected abstract XSalesTask CreateCadrastarTask(int? id, T pCliente);
+        protected abstract XSalesTask CreateExcluirTask(int id);
 
         public async Task<IActionResult> Index()
         {
@@ -26,20 +34,21 @@ namespace AmbevWeb.Controllers
         public async Task<IActionResult> Cadastrar(int? id)
         {
             if (!id.HasValue)
-                return View(new ClienteModel());
-            var c = await FContext.Clientes.FindAsync(id);
-            if (c != null)
-                return View(c);
-            RegistraFalha($"Cliente com ID=\"{id.Value}\" não encontrado.");
+                return View(new T());
+            var t = await _DbList.FindAsync(id) as T;
+            if (t != null)
+                return View(t);
+            RegistraFalha($"{_Title} com ID=\"{id.Value}\" não encontrado.");
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult Cadastrar(int? id, [FromForm] ClienteModel pCliente)
+        public IActionResult Cadastrar(int? id, [FromForm] T pEntity)
         {
             if (!ModelState.IsValid)
-                return View(pCliente);
-            return ProcessPipeline(nameof(Index), new XCreateOrUpdateCustomerTask(id, pCliente));
+                return View(pEntity);
+            XSalesTask t = CreateCadrastarTask(id, pEntity);
+            return ProcessPipeline(nameof(Index), t);
         }
 
         [HttpGet]
@@ -63,7 +72,8 @@ namespace AmbevWeb.Controllers
         [HttpPost]
         public IActionResult Excluir(int id)
         {
-            return ProcessPipeline(nameof(Index), new XDeleteCustomerTask(id));
+            XSalesTask t = CreateExcluirTask(id);
+            return ProcessPipeline(nameof(Index), t);
         }
     }
 }

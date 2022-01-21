@@ -15,14 +15,15 @@ namespace AmbevWeb.Pipeline
 
         public V Process(T pInput)
         {
+            V v = default(V);
             foreach (var f in _Filters)
             {
                 bool stop = false;
-                V v = f.Execute(pInput, ref stop);
-                if (stop == false)
-                    return v;
+                v = f.Execute(pInput, ref stop);
+                if (stop)
+                    break;
             }
-            return default(V);
+            return v;
         }
     }
 }

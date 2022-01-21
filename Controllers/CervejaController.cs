@@ -1,45 +1,41 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AmbevWeb.Models;
+using AmbevWeb.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmbevWeb.Controllers
 {
-    public class CervejaController : Controller
+    public class CervejaController : XSalesController
     {
-        private readonly AmbevContext _context;
-
-        public CervejaController(AmbevContext context)
+        public CervejaController(AmbevContext pContext)
+            : base(pContext)
         {
-            this._context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cervejas.OrderBy(x => x.Nome).AsNoTracking().ToListAsync());
+            var beers = await FContext.Cervejas.OrderBy(o => o.Nome).AsNoTracking().ToListAsync();
+            return View(beers);
         }
 
         [HttpGet]
         public async Task<IActionResult> Cadastrar(int? id)
         {
             if (id.HasValue)
-            {
-                var produto = await _context.Cervejas.FindAsync(id);
-                if (produto == null)
-                {
-                    TempData["mensagem"] = MensagemModel.Serializar("Cerveja não encontrada.", TipoMensagem.Erro);
-                    return RedirectToAction(nameof(Index));
-                }
-                return View(produto);
-            }
-            return View(new CervejaModel());
+                return View(new CervejaModel());
+            var p = await FContext.Cervejas.FindAsync(id);
+            if (p != null)
+                return View(p);
+            RegistraFalha("Cerveja não encontrada.");
+            return RedirectToAction(nameof(Index));
         }
 
-        private bool CervejaExiste(int id)
+        private bool CervejaExiste(int pIdCerveja)
         {
-            return _context.Cervejas.Any(x => x.IdCerveja == id);
+            return FContext.Cervejas.Any(o => o.IdCerveja == pIdCerveja);
         }
 
         [HttpPost]
@@ -51,8 +47,8 @@ namespace AmbevWeb.Controllers
                 {
                     if (CervejaExiste(id.Value))
                     {
-                        _context.Cervejas.Update(cerveja);
-                        if (await _context.SaveChangesAsync() > 0)
+                        FContext.Cervejas.Update(cerveja);
+                        if (await FContext.SaveChangesAsync() > 0)
                         {
                             TempData["mensagem"] = MensagemModel.Serializar("Cerveja alterada com sucesso.");
                         }
@@ -68,8 +64,8 @@ namespace AmbevWeb.Controllers
                 }
                 else
                 {
-                    _context.Cervejas.Add(cerveja);
-                    if (await _context.SaveChangesAsync() > 0)
+                    FContext.Cervejas.Add(cerveja);
+                    if (await FContext.SaveChangesAsync() > 0)
                     {
                         TempData["mensagem"] = MensagemModel.Serializar("Cerveja cadastrada com sucesso.");
                     }
@@ -95,7 +91,7 @@ namespace AmbevWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var produto = await _context.Cervejas.FindAsync(id);
+            var produto = await FContext.Cervejas.FindAsync(id);
             if (produto == null)
             {
                 TempData["mensagem"] = MensagemModel.Serializar("Cerveja não informada.", TipoMensagem.Erro);
@@ -108,14 +104,14 @@ namespace AmbevWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Excluir(int id)
         {
-            var produto = await _context.Cervejas.FindAsync(id);
+            var produto = await FContext.Cervejas.FindAsync(id);
             if (produto != null)
             {
-                _context.Cervejas.Remove(produto);
-                if (await _context.SaveChangesAsync() > 0)
+                FContext.Cervejas.Remove(produto);
+                if (await FContext.SaveChangesAsync() > 0)
                     TempData["mensagem"] = MensagemModel.Serializar("Cerveja excluída com sucesso.");
                 else
-                    TempData["mensagem"] = MensagemModel.Serializar("Não foi possível excluir a cerveja.", TipoMensagem.Erro);                
+                    TempData["mensagem"] = MensagemModel.Serializar("Não foi possível excluir a cerveja.", TipoMensagem.Erro);
             }
             else
             {
