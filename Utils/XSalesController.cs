@@ -1,6 +1,7 @@
 ﻿using AmbevWeb.Models;
 using AmbevWeb.RulePipeline;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AmbevWeb.Utils
 {
@@ -21,19 +22,30 @@ namespace AmbevWeb.Utils
             return p.Process(FContext);
         }
 
-        protected IActionResult ProcessPipeline(string pDefaultAction, params XSalesTask[] pTasks)
+        protected IActionResult ProcessPipeline(string pRedirect, params XSalesTask[] pTasks)
+        {
+            return ProcessPipeline(pRedirect, pRedirect, pTasks);
+        }
+
+        protected IActionResult ProcessPipeline(string pSucessRedirect, string pErrorRedirect, params XSalesTask[] pTasks)
+        {
+            Func<XSalesReturn, IActionResult> sucess = (o) => RedirectToAction(pSucessRedirect);
+            Func<XSalesReturn, IActionResult> error = (o) => RedirectToAction(pErrorRedirect);
+            return ProcessPipeline(sucess, error, pTasks);
+        }
+
+        protected IActionResult ProcessPipeline(Func<XSalesReturn, IActionResult> pSucessAction, Func<XSalesReturn, IActionResult> pErrorAction, params XSalesTask[] pTasks)
         {
             XSalesReturn sr = ProcessPipeline(pTasks);
             switch (sr.Result)
             {
                 case XSalesResult.Sucess:
                     RegistraSucesso(sr.Message);
-                    break;
+                    return pSucessAction(sr);
                 default:
                     RegistraFalha(sr.Message);
-                    break;
+                    return pErrorAction(sr);
             }
-            return RedirectToAction(pDefaultAction);
         }
     }
 }

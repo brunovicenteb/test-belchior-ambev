@@ -5,6 +5,8 @@ using AmbevWeb.RulePipeline;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmbevWeb.Utils;
+using System.Collections.Generic;
+using System;
 
 namespace AmbevWeb.Controllers
 {
@@ -23,11 +25,13 @@ namespace AmbevWeb.Controllers
 
         protected abstract XSalesTask CreateCadrastarTask(int? id, T pCliente);
         protected abstract XSalesTask CreateExcluirTask(int id);
+        protected abstract XSalesTask CreateConfirmacaoExcluirTask(int? id);
+        protected abstract Task<List<T>> GetIndexList();
 
         public async Task<IActionResult> Index()
         {
-            var clientes = await FContext.Clientes.OrderBy(x => x.Nome).AsNoTracking().ToListAsync();
-            return View(clientes);
+            var itms = await GetIndexList();
+            return View(itms);
         }
 
         [HttpGet]
@@ -52,21 +56,12 @@ namespace AmbevWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Excluir(int? id)
+        public IActionResult Excluir(int? id)
         {
-            if (!id.HasValue)
-            {
-                TempData["mensagem"] = MensagemModel.Serializar("Cliente não informado.", TipoMensagem.Erro);
-                return RedirectToAction(nameof(Index));
-            }
-
-            var cliente = await FContext.Clientes.FindAsync(id);
-            if (cliente == null)
-            {
-                TempData["mensagem"] = MensagemModel.Serializar("Cliente não encontrado.", TipoMensagem.Erro);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(cliente);
+            Func<XSalesReturn, IActionResult> sucess = (o) => View(o.Artifact as T);
+            Func<XSalesReturn, IActionResult> error = (o) => RedirectToAction(nameof(Index));
+            XSalesTask t = CreateConfirmacaoExcluirTask(id);
+            return ProcessPipeline(sucess, error, t);
         }
 
         [HttpPost]

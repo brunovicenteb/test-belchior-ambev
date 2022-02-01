@@ -5,65 +5,36 @@ using AmbevWeb.RulePipeline;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AmbevWeb.Utils;
+using System.Collections.Generic;
 
 namespace AmbevWeb.Controllers
 {
-    public class ClienteController : XSalesController
+    public class ClienteController : XSalesCrudController<ClienteModel>
     {
 
         public ClienteController(AmbevContext pContext)
-            : base(pContext)
+            : base(pContext, "Cliente", pContext.Clientes)
         {
         }
 
-        public async Task<IActionResult> Index()
+        protected override XSalesTask CreateCadrastarTask(int? id, ClienteModel pCliente)
         {
-            var clientes = await FContext.Clientes.OrderBy(x => x.Nome).AsNoTracking().ToListAsync();
-            return View(clientes);
+            return new XCreateOrUpdateCustomerTask(id, pCliente);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Cadastrar(int? id)
+        protected override XSalesTask CreateExcluirTask(int id)
         {
-            if (!id.HasValue)
-                return View(new ClienteModel());
-            var c = await FContext.Clientes.FindAsync(id);
-            if (c != null)
-                return View(c);
-            RegistraFalha($"Cliente com ID=\"{id.Value}\" não encontrado.");
-            return RedirectToAction("Index");
+            return new XDeleteCustomerTask(id);
         }
 
-        [HttpPost]
-        public IActionResult Cadastrar(int? id, [FromForm] ClienteModel pCliente)
+        protected override XSalesTask CreateConfirmacaoExcluirTask(int? id)
         {
-            if (!ModelState.IsValid)
-                return View(pCliente);
-            return ProcessPipeline(nameof(Index), new XCreateOrUpdateCustomerTask(id, pCliente));
+            return new XConfirmationDeleteCustomerTask(id);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Excluir(int? id)
+        protected override Task<List<ClienteModel>> GetIndexList()
         {
-            if (!id.HasValue)
-            {
-                TempData["mensagem"] = MensagemModel.Serializar("Cliente não informado.", TipoMensagem.Erro);
-                return RedirectToAction(nameof(Index));
-            }
-
-            var cliente = await FContext.Clientes.FindAsync(id);
-            if (cliente == null)
-            {
-                TempData["mensagem"] = MensagemModel.Serializar("Cliente não encontrado.", TipoMensagem.Erro);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(cliente);
-        }
-
-        [HttpPost]
-        public IActionResult Excluir(int id)
-        {
-            return ProcessPipeline(nameof(Index), new XDeleteCustomerTask(id));
+            return FContext.Clientes.OrderBy(o => o.Nome).AsNoTracking().ToListAsync();
         }
     }
 }

@@ -13,13 +13,15 @@ namespace AmbevWeb.RulePipeline
 
     public class XSalesReturn
     {
-        public XSalesReturn(string pMessage, XSalesResult pResult)
+        public XSalesReturn(string pMessage, XSalesResult pResult, object pArtifact = null)
         {
             Message = pMessage;
             Result = pResult;
+            Artifact = pArtifact;
         }
 
         public readonly string Message;
         public readonly XSalesResult Result;
+        public readonly object Artifact;
     }
 }
